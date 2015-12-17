@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
 	`question` VARCHAR(256) NOT NULL,
 	`comment` VARCHAR(512),
 	`state` SMALLINT NOT NULL DEFAULT 0,
+	`date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	 PRIMARY KEY (`report_id`),
 	 INDEX (`reason_id`),
 	 FOREIGN KEY (`reason_id`) REFERENCES `reasons` (`reason_id`) ON DELETE SET DEFAULT
