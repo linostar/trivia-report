@@ -1,28 +1,25 @@
-CREATE TABLE IF NOT EXISTS `categories` (
-	`category_id` SMALLINT NOT NULL,
-	`category_name` VARCHAR(32) NOT NULL,
-	PRIMARY KEY (`category_id`)
+CREATE TABLE IF NOT EXISTS `reasons` (
+	`reason_id` SMALLINT NOT NULL,
+	`reason_name` VARCHAR(32) NOT NULL,
+	PRIMARY KEY (`reason_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-INSERT IGNORE INTO `categories` VALUES 
-	(1, 'default'),
-	(2, 'Anime'),
-	(3, 'Geography'),
-	(4, 'History'),
-	(5, 'LOTR-Books'),
-	(6, 'LOTR-Movies'),
-	(7, 'Movies'),
-	(8, 'Naruto'),
-	(9, 'ScienceAndNature'),
-	(10, 'Simpsons'),
-	(11, 'Stargate');
+INSERT IGNORE INTO `reasons` VALUES 
+	(1, 'Duplicate question'),
+	(2, 'Wrong category'),
+	(3, 'Incorrect answer'),
+	(4, 'Typo in question'),
+	(5, 'Typo in answer'),
+	(6, 'Muliple possible answers'),
+	(99, 'Other');
 
 CREATE TABLE IF NOT EXISTS `reports` (
 	`report_id` INT NOT NULL AUTO_INCREMENT,
-	`category_id` SMALLINT NOT NULL DEFAULT 1,
+	`reason_id` SMALLINT NOT NULL DEFAULT 99,
 	`question` VARCHAR(256) NOT NULL,
 	`comment` VARCHAR(512),
+	`state` SMALLINT NOT NULL DEFAULT 0,
 	 PRIMARY KEY (`report_id`),
-	 INDEX (`category_id`),
-	 FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE SET DEFAULT
+	 INDEX (`reason_id`),
+	 FOREIGN KEY (`reason_id`) REFERENCES `reasons` (`reason_id`) ON DELETE SET DEFAULT
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
