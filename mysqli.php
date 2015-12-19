@@ -43,7 +43,7 @@
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=? AND rp.state=? " .
 				"AND rp.reason_id=re.reason_id ORDER BY rp.report_id DESC"
 				);
-			$stmt_select_reason_name = $conn->prepare("SELECT reason_name FROM reasons WHERE reason_id=?")
+			$stmt_select_reason_name = $conn->prepare("SELECT reason_name FROM reasons WHERE reason_id=?");
 			$stmt_insert_report = $conn->prepare("INSERT INTO reports (reason_id, question, comment, state) VALUES (?, ?, ?, 0)");
 			$stmt_delete_report = $conn->prepare("DELETE FROM reports WHERE report_id=?");
 			$stmt_update_report_state = $conn->prepare("UPDATE reports SET state=? WHERE report_id=?");

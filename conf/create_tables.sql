@@ -10,7 +10,7 @@ INSERT IGNORE INTO `reasons` VALUES
 	(3, 'Incorrect answer'),
 	(4, 'Typo in question'),
 	(5, 'Typo in answer'),
-	(6, 'Muliple possible answers'),
+	(6, 'Multiple possible answers'),
 	(99, 'Other');
 
 CREATE TABLE IF NOT EXISTS `reports` (
