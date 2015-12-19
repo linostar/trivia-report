@@ -1,4 +1,8 @@
 <?php
+	// Credentials for the admin panel
+	$admin_user = "admin";
+	$admin_pass = "foo";
+
 	// MySQL config for trivia-report db access
 	$conn_report_host = "localhost";
 	$conn_report_db = "trivia_report_db";
