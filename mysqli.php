@@ -115,5 +115,15 @@
 			$conn =& $this->conn;
 			return $conn->query("SELECT reason_id, reason_name FROM reasons ORDER BY reason_id ASC");
 		}
+
+		public function check_reason_exists($n_reason) {
+			$stmt_select_reason_name =& $this->stmt_select_reason_name;
+			$this->reason_id = $n_reason;
+			$stmt_select_reason_name->execute();
+			if ($stmt_select_reason_name->fetch())
+				return true;
+			else
+				return false;
+		}
 	}
 ?>

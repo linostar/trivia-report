@@ -37,24 +37,31 @@
 		$db->start();
 
 		list($equation, $hashedCaptcha) = Captcha::calculate();
+		$all_reasons = $db->get_all_reasons();
 
 		if ($_POST["selReason"] && $_POST["txtQuestion"] && $_POST["txtCaptcha"]) {
-			if (Captcha::check($_POST["txtCaptcha"], $_POST["hashedCaptcha"])) {
+			if (!$db->check_reason_exists($_POST["selReason"])) {
+				echo '<div id="user_alert" class="alert alert-danger col-sm-8 col-sm-offset-2">Invalid type of mistake.</div>';
+			}
+			else if (Captcha::check($_POST["txtCaptcha"], $_POST["hashedCaptcha"])) {
 				$db->add_report($_POST["selReason"], $_POST["txtQuestion"], $_POST["txtComment"]);
-				echo '<div class="alert alert-success col-sm-8 col-sm-offset-2">Report successfully submitted. Thank you for notifying us about this mistake.</div>';
+				echo '<div id="user_alert" class="alert alert-success col-sm-8 col-sm-offset-2">Report successfully submitted. ' .
+				'Thank you for notifying us about this mistake.</div>';
 			}
 			else {
-				echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">The answer to the equation is <b>incorrect</b>. Try again.</div>';
+				echo '<div id="user_alert" class="alert alert-danger col-sm-8 col-sm-offset-2">The answer to the equation is ' .
+				'<b>incorrect</b>. Try again.</div>';
 			}
 		}
 		else if ($_POST["txtQuestion"]) {
-			echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Please solve the equation correctly.</div>';
+			echo '<div id="user_alert" class="alert alert-danger col-sm-8 col-sm-offset-2">Please solve the equation correctly.</div>';
 		}
 		else if ($_POST["txtCaptcha"]) {
-			echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Adding the question there the mistake occured is required.</div>';
+			echo '<div id="user_alert" class="alert alert-danger col-sm-8 col-sm-offset-2">Adding the question there the mistake ' .
+			'occured is required.</div>';
 		}
 		else if ($_POST["selReason"]) {
-			echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Please fill all required fields.</div>';
+			echo '<div id="user_alert" class="alert alert-danger col-sm-8 col-sm-offset-2">Please fill all required fields.</div>';
 		}
 	?>
 	<div class="row">
@@ -66,8 +73,7 @@
 					<label for="selReason" class="control-label">Type of mistake</label>
 					<select name="selReason" id="selReason" class="form-control">
 					<?php
-						$result = $db->get_all_reasons();
-						while ($row = $result->fetch_array(MYSQLI_NUM)) {
+						while ($row = $all_reasons->fetch_array(MYSQLI_NUM)) {
 							echo "<option value=\"$row[0]\">$row[1]</option>";
 						}
 					?>

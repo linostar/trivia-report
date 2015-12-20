@@ -46,6 +46,11 @@ body {
 	margin-bottom: 1em;
 }
 
+#user_alert {
+	margin-top: 1.5em;
+	margin-bottom: 0;
+}
+
 .footer {
 	position: fixed;
 	left: 0;
