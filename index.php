@@ -18,18 +18,21 @@
 	</div>
 	<div class="container">
 	<?php
-		require "mysqli.php";
+		require_once "mysqli.php";
+		require_once "captcha.php";
 
 		$db = new Connection;
 		$db->start();
 
+		list($equation, $hashedCaptcha) = Captcha::calculate();
+
 		if ($_POST["selReason"] && $_POST["txtQuestion"] && $_POST["txtCaptcha"]) {
-			if (1) {
+			if (Captcha::check($_POST["txtCaptcha"], $_POST["hashedCaptcha"])) {
 				$db->add_report($_POST["selReason"], $_POST["txtQuestion"], $_POST["txtComment"]);
 				echo '<div class="alert alert-success col-sm-8 col-sm-offset-2">Report successfully submitted. Thank you for notifying us about this mistake.</div>';
 			}
 			else {
-				echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">The answer to the equation is incorrect. Try again.</div>';
+				echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">The answer to the equation is <b>incorrect</b>. Try again.</div>';
 			}
 		}
 		else if ($_POST["txtQuestion"]) {
@@ -48,6 +51,7 @@
 		<div class="col-sm-8 col-sm-offset-2">
 			<h3>Report a mistake in Trivia bot's questions</h3>
 			<form action="" method="post" id="formReport">
+				<input type="hidden" name="hashedCaptcha" id="hashedCaptcha" value="<?php echo $hashedCaptcha; ?>">
 				<div class="form-group">
 					<label for="selReason" class="control-label">Type of mistake</label>
 					<select name="selReason" id="selReason" class="form-control">
@@ -72,7 +76,8 @@
 				</div>
 				<div class="form-group">
 					<label for="txtCaptcha" class="control-label">Solve the following equation</label>
-					<input type="text" name="txtCaptcha" id="txtCaptcha" value="" class="form-control" placeholder="1 + 1 = ?">
+					<input type="text" name="txtCaptcha" id="txtCaptcha" value="" class="form-control" 
+					placeholder="<?php echo $equation; ?>">
 				</div>
 				<div class="form-group">
 					<button type="submit" name="report_button" class="btn btn-primary">Report</button>
