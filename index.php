@@ -7,18 +7,31 @@
 	<title>Rizon - Trivia Reporter</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrapValidator.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
+	<div class="jumbotron">
+		<div class="container">
+			<h2>Rizon Chat Network</h2>
+		</div>
+	</div>
+	<div class="container">
 	<?php
 		require_once "mysqli.php";
+		if ($_POST["selReason"] && $_POST["txtQuestion"] && $_POST["txtCaptcha"]) {
+			echo "1";
+		}
+		else if ($_POST["selReason"]) {
 	?>
-	<div class="jumbotron">
-		<h2>Rizon Chat Network</h2>
-	</div>
+		<div class="alert alert-danger col-sm-8 col-sm-offset-2">Please fill all required fields</div>
+	<?php
+		}
+	?>
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2">
 			<h3>Report a mistake in Trivia bot's questions</h3>
-			<form action="" method="post">
+			<form action="" method="post" id="formReport">
 				<div class="form-group">
 					<label for="selReason" class="control-label">Type of mistake</label>
 					<select name="selReason" id="selReason" class="form-control">
@@ -42,11 +55,11 @@
 					placeholder="Your correction or any other comment you want to add"></textarea>
 				</div>
 				<div class="form-group">
-					<label for="txtCaptcha" class="control-label">Please solve the following equation</label>
+					<label for="txtCaptcha" class="control-label">Solve the following equation</label>
 					<input type="text" name="txtCaptcha" id="txtCaptcha" value="" class="form-control" placeholder="1 + 1 = ?">
 				</div>
 				<div class="form-group">
-					<button type="submit" class="btn btn-primary">Report</button>
+					<button type="submit" name="report_button" class="btn btn-primary">Report</button>
 				</div>
 			</form>
 		</div>
@@ -56,8 +69,11 @@
 			<div id="rizon_footer">© 2015 Rizon</div>
 		</center>
 	</footer>
+	</div>
 	<script src="js/jquery-2.1.4.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/ie10-viewport-bug-workaround.js"></script>
+	<script src="js/bootstrapValidator.min.js"></script>
+	<script src="js/misc.js"></script>
 </body>
 </html>
