@@ -95,20 +95,23 @@
 			$this->reason_id = $n_reason;
 			$this->question = $n_question;
 			$this->comment = $n_comment;
-			$stmt_insert_report->execute();
+			if (!$stmt_insert_report->execute())
+				echo "Execute failed: (" . $stmt_insert_report->errno . ") " . $stmt_insert_report->error;
 		}
 
 		public function delete_report($n_report) {
 			$stmt_delete_report =& $this->stmt_delete_report;
 			$this->report_id = $n_report;
-			$stmt_delete_report->execute();
+			if(!$stmt_delete_report->execute())
+				echo "Execute failed: (" . $stmt_delete_report->errno . ") " . $stmt_delete_report->error;
 		}
 
 		public function update_state($n_report, $n_state) {
 			$stmt_update_report_state =& $this->stmt_update_report_state;
 			$this->report_id = $n_report;
 			$this->state = $n_state;
-			$stmt_update_report_state->execute();
+			if (!$stmt_update_report_state->execute())
+				echo "Execute failed: (" . $stmt_update_report_state->errno . ") " . $stmt_update_report_state->error;
 		}
 
 		public function get_all_reasons() {
@@ -120,7 +123,10 @@
 			$stmt_select_reason_name =& $this->stmt_select_reason_name;
 			$this->reason_id = $n_reason;
 			$stmt_select_reason_name->execute();
-			if ($stmt_select_reason_name->fetch())
+			$stmt_select_reason_name->store_result();
+			$num_rows = $stmt_select_reason_name->num_rows;
+			$stmt_select_reason_name->free_result();
+			if ($num_rows > 0)
 				return true;
 			else
 				return false;
