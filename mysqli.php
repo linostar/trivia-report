@@ -83,6 +83,7 @@
 			$stmt_select_report_by_reason->close();
 			$stmt_select_report_by_state->close();
 			$stmt_select_report_by_reason_state->close();
+			$stmt_select_reason_name->close();
 			$stmt_insert_report->close();
 			$stmt_delete_report->close();
 			$stmt_update_report_state->close();
@@ -108,6 +109,11 @@
 			$this->report_id = $n_report;
 			$this->state = $n_state;
 			$stmt_update_report_state->execute();
+		}
+
+		public function get_all_reasons() {
+			$conn =& $this->conn;
+			return $conn->query("SELECT reason_id, reason_name FROM reasons ORDER BY reason_id ASC");
 		}
 	}
 ?>

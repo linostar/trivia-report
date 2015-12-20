@@ -44,8 +44,6 @@
 		else if ($_POST["selReason"]) {
 			echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Please fill all required fields.</div>';
 		}
-
-		$db->stop();
 	?>
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2">
@@ -55,13 +53,12 @@
 				<div class="form-group">
 					<label for="selReason" class="control-label">Type of mistake</label>
 					<select name="selReason" id="selReason" class="form-control">
-						<option value="1">Duplicate question</option>
-						<option value="2">Wrong category</option>
-						<option value="3">Incorrect answer</option>
-						<option value="4">Typo in question</option>
-						<option value="5">Typo in answer</option>
-						<option value="6">Multiple possible answers</option>
-						<option value="99">Other (specify in comment)</option>
+					<?php
+						$result = $db->get_all_reasons();
+						while ($row = $result->fetch_array(MYSQLI_NUM)) {
+							echo "<option value=\"$row[0]\">$row[1]</option>";
+						}
+					?>
 					</select>
 				</div>
 				<div class="form-group">
@@ -91,6 +88,9 @@
 		</center>
 	</footer>
 	</div>
+	<?php
+		$db->stop();
+	?>
 	<script src="js/jquery-2.1.4.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/ie10-viewport-bug-workaround.js"></script>
