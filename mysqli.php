@@ -19,7 +19,17 @@
 		private $state;
 
 		public function start() {
-			$conn = new mysqli($conn_report_host, $conn_report_user, $conn_report_pass, $conn_report_db);
+			$conn =& $this->conn;
+			$stmt_select_report_by_id =& $this->stmt_select_report_by_id;
+			$stmt_select_report_by_reason =& $this->stmt_select_report_by_reason;
+			$stmt_select_report_by_state =& $this->stmt_select_report_by_state;
+			$stmt_select_report_by_reason_state =& $this->stmt_select_report_by_reason_state;
+			$stmt_select_reason_name =& $this->stmt_select_reason_name;
+			$stmt_insert_report =& $this->stmt_insert_report;
+			$stmt_delete_report =& $this->stmt_delete_report;
+			$stmt_update_report_state =& $this->stmt_update_report_state;
+
+			$conn = new mysqli(Config::$conn_report_host, Config::$conn_report_user, Config::$conn_report_pass, Config::$conn_report_db);
 			if ($conn->connect_error) {
 				die("Connection failed: " . $conn->connect_error);
 			}
@@ -48,17 +58,27 @@
 			$stmt_delete_report = $conn->prepare("DELETE FROM reports WHERE report_id=?");
 			$stmt_update_report_state = $conn->prepare("UPDATE reports SET state=? WHERE report_id=?");
 
-			$stmt_select_report_by_id->bind_param("i", $report_id);
-			$stmt_select_report_by_reason->bind_param("i", $reason_id);
-			$stmt_select_report_by_state->bind_param("i", $state);
-			$stmt_select_report_by_reason_state->bind_param("ii", $reason_id, $state);
-			$stmt_select_reason_name->bind_param("i", $reason_id);
-			$stmt_insert_report->bind_param("iss", $reason_id, $question, $comment);
-			$stmt_delete_report->bind_param("i", $report_id);
-			$stmt_update_report_state->bind_param("ii", $state, $report_id);
+			$stmt_select_report_by_id->bind_param("i", $this->report_id);
+			$stmt_select_report_by_reason->bind_param("i", $this->reason_id);
+			$stmt_select_report_by_state->bind_param("i", $this->state);
+			$stmt_select_report_by_reason_state->bind_param("ii", $this->reason_id, $this->state);
+			$stmt_select_reason_name->bind_param("i", $this->reason_id);
+			$stmt_insert_report->bind_param("iss", $this->reason_id, $this->question, $this->comment);
+			$stmt_delete_report->bind_param("i", $this->report_id);
+			$stmt_update_report_state->bind_param("ii", $this->state, $this->report_id);
 		}
 
 		public function stop() {
+			$conn =& $this->conn;
+			$stmt_select_report_by_id =& $this->stmt_select_report_by_id;
+			$stmt_select_report_by_reason =& $this->stmt_select_report_by_reason;
+			$stmt_select_report_by_state =& $this->stmt_select_report_by_state;
+			$stmt_select_report_by_reason_state =& $this->stmt_select_report_by_reason_state;
+			$stmt_select_reason_name =& $this->stmt_select_reason_name;
+			$stmt_insert_report =& $this->stmt_insert_report;
+			$stmt_delete_report =& $this->stmt_delete_report;
+			$stmt_update_report_state =& $this->stmt_update_report_state;
+
 			$stmt_select_report_by_id->close();
 			$stmt_select_report_by_reason->close();
 			$stmt_select_report_by_state->close();
@@ -70,20 +90,23 @@
 		}
 
 		public function add_report($n_reason, $n_question, $n_comment) {
-			$reason_id = $n_reason;
-			$question = $n_question;
-			$comment = $n_comment;
+			$stmt_insert_report =& $this->stmt_insert_report;
+			$this->reason_id = $n_reason;
+			$this->question = $n_question;
+			$this->comment = $n_comment;
 			$stmt_insert_report->execute();
 		}
 
 		public function delete_report($n_report) {
-			$report_id = $n_report;
+			$stmt_delete_report =& $this->stmt_delete_report;
+			$this->report_id = $n_report;
 			$stmt_delete_report->execute();
 		}
 
 		public function update_state($n_report, $n_state) {
-			$report_id = $n_report;
-			$state = $n_state;
+			$stmt_update_report_state =& $this->stmt_update_report_state;
+			$this->report_id = $n_report;
+			$this->state = $n_state;
 			$stmt_update_report_state->execute();
 		}
 	}

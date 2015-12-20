@@ -18,15 +18,31 @@
 	</div>
 	<div class="container">
 	<?php
-		require_once "mysqli.php";
+		require "mysqli.php";
+
+		$db = new Connection;
+		$db->start();
+
 		if ($_POST["selReason"] && $_POST["txtQuestion"] && $_POST["txtCaptcha"]) {
-			echo "1";
+			if (1) {
+				$db->add_report($_POST["selReason"], $_POST["txtQuestion"], $_POST["txtComment"]);
+				echo '<div class="alert alert-success col-sm-8 col-sm-offset-2">Report successfully submitted. Thank you for notifying us about this mistake.</div>';
+			}
+			else {
+				echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">The answer to the equation is incorrect. Try again.</div>';
+			}
+		}
+		else if ($_POST["txtQuestion"]) {
+			echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Please solve the equation correctly.</div>';
+		}
+		else if ($_POST["txtCaptcha"]) {
+			echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Adding the question there the mistake occured is required.</div>';
 		}
 		else if ($_POST["selReason"]) {
-	?>
-		<div class="alert alert-danger col-sm-8 col-sm-offset-2">Please fill all required fields</div>
-	<?php
+			echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Please fill all required fields.</div>';
 		}
+
+		$db->stop();
 	?>
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2">
