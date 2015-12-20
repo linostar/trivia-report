@@ -11,9 +11,21 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
-	<div class="jumbotron">
+	<div class="userpage_header">
 		<div class="container">
-			<h2>Rizon Chat Network</h2>
+			<div class="header_container col-sm-8 col-sm-offset-2">
+				<div>
+					<img src="https://abuse.rizon.net/images/logo.png">
+				</div>
+				<div>
+					<ul class="nav_menu">
+						<li><a href="https://rizon.net/">Home</a></li>
+						<li><a href="http://forum.rizon.net/">Chat</a></li>
+						<li><a href="https://rizon.net/chat/">Forums</a></li>
+						<li><a href="https://abuse.rizon.net/">Ban appeal</a></li>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="container">
@@ -47,7 +59,7 @@
 	?>
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2">
-			<h3>Report a mistake in Trivia bot's questions</h3>
+			<h3 id="form_header">Report a mistake in Trivia bot's questions</h3>
 			<form action="" method="post" id="formReport">
 				<input type="hidden" name="hashedCaptcha" id="hashedCaptcha" value="<?php echo $hashedCaptcha; ?>">
 				<div class="form-group">
@@ -82,12 +94,12 @@
 			</form>
 		</div>
 	</div>
+	</div>
 	<footer class="footer">
 		<center>
-			<div id="rizon_footer">© 2015 Rizon</div>
+			<div id="rizon_footer">© <?php echo date("Y"); ?> Rizon</div>
 		</center>
 	</footer>
-	</div>
 	<?php
 		$db->stop();
 	?>
