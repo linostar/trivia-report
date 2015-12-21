@@ -20,8 +20,8 @@
 				<div>
 					<ul class="nav_menu">
 						<li><a href="https://rizon.net/">Home</a></li>
-						<li><a href="http://forum.rizon.net/">Chat</a></li>
-						<li><a href="https://rizon.net/chat/">Forums</a></li>
+						<li><a href="https://rizon.net/chat/">Chat</a></li>
+						<li><a href="http://forum.rizon.net/">Forums</a></li>
 						<li><a href="https://abuse.rizon.net/">Ban appeal</a></li>
 					</ul>
 				</div>
@@ -95,7 +95,7 @@
 					placeholder="<?php echo $equation; ?>">
 				</div>
 				<div class="form-group">
-					<button type="submit" name="report_button" class="btn btn-primary">Report</button>
+					<button type="submit" name="reportButton" class="btn btn-primary">Report</button>
 				</div>
 			</form>
 		</div>
