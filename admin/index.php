@@ -18,6 +18,10 @@
 	require_once "utils.php";
 	require_once "../mysqli.php";
 
+	$db = new Connection;
+	$db->start();
+	$all_reasons = $db->get_all_reasons();
+
 	function display_admin_navbar() {
 ?>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
@@ -29,11 +33,11 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" style="background-color: black;">Rizon</a>
+				<a class="navbar-brand" style="background-color: black;" href="index.php">Admin Panel</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="https://rizon.net/">Home</a></li>
+					<li><a href="https://rizon.net/">Rizon Home</a></li>
 					<li><a href="../index.php">Trivia Reporter</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
@@ -47,7 +51,47 @@
 
 	function display_admin_page() {
 ?>
-	<div class="container"></div>
+	<div class="container">
+		<div style="display: flex; justify-content: space-between;">
+			<div>
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<div class="panel-title">Filter by</div>
+					</div>
+					<div class="panel-body">
+						<div class="filter_block">
+							<div class="filter_title">Report state</div>
+							<div class="filter_lines"><a href="?filter=state&fsub=0">NEW</a></div>
+							<div class="filter_lines"><a href="?filter=state&fsub=1">FIXED</a></div>
+							<div class="filter_lines"><a href="?filter=state&fsub=2">DUPLICATE</a></div>
+							<div class="filter_lines"><a href="?filter=state&fsub=3">INVALID</a></div>
+							<div class="filter_lines"><a href="?filter=state&fsub=4">WONTFIX</a></div>
+							<div class="filter_lines"><a href="?filter=state&fsub=-1"><b>ALL</b></a></div>	
+						</div>
+						<div class="filter_block">
+							<div class="filter_title">Mistake type</div>
+<?php
+	global $all_reasons;
+	while ($row = $all_reasons->fetch_array(MYSQLI_NUM)) {
+		echo "<div class=\"filter_lines\"><a href=\"?filter=reason&fsub=$row[0]\">$row[1]</a></div>";
+	}
+?>
+							<div class="filter_lines"><a href="?filter=reason&fsub=-1"><b>ALL</b></a></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="width: 80%;">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="panel-title">Reports</div>
+					</div>
+					<div class="panel-body">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 <?php
 	}
 
@@ -77,9 +121,6 @@
 	</div>
 <?php
 	}
-
-	$db = new Connection;
-	$db->start();
 
 	if ($_POST["txtUser"] && $_POST["txtPass"]) {
 		if (Utils::login($_POST["txtUser"], $_POST["txtPass"])) {
@@ -112,7 +153,7 @@
 			<div id="rizon_footer">© <?php echo date("Y"); ?> Rizon</div>
 		</center>
 	</footer>
-	
+
 	<script src="../js/jquery-2.1.4.min.js"></script>
 	<script src="../js/bootstrap.min.js"></script>
 	<script src="../js/ie10-viewport-bug-workaround.js"></script>

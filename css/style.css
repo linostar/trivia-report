@@ -74,3 +74,16 @@ body {
 .panel_login {
 	width: 30em;
 }
+
+.filter_block {
+	padding-bottom: 0.8em;
+}
+
+.filter_title {
+	font-weight: bold;
+	padding-bottom: 0.3em;
+}
+
+.filter_lines {
+	padding-bottom: 0.1em;
+}
