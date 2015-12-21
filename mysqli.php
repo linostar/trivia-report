@@ -17,6 +17,7 @@
 		private $question;
 		private $comment;
 		private $state;
+		private $theme;
 
 		public function start() {
 			$conn =& $this->conn;
@@ -54,7 +55,7 @@
 				"AND rp.reason_id=re.reason_id ORDER BY rp.report_id DESC"
 				);
 			$stmt_select_reason_name = $conn->prepare("SELECT reason_name FROM reasons WHERE reason_id=?");
-			$stmt_insert_report = $conn->prepare("INSERT INTO reports (reason_id, question, comment, state) VALUES (?, ?, ?, 0)");
+			$stmt_insert_report = $conn->prepare("INSERT INTO reports (reason_id, question, comment, state, theme) VALUES (?, ?, ?, 0, ?)");
 			$stmt_delete_report = $conn->prepare("DELETE FROM reports WHERE report_id=?");
 			$stmt_update_report_state = $conn->prepare("UPDATE reports SET state=? WHERE report_id=?");
 
@@ -63,7 +64,7 @@
 			$stmt_select_report_by_state->bind_param("i", $this->state);
 			$stmt_select_report_by_reason_state->bind_param("ii", $this->reason_id, $this->state);
 			$stmt_select_reason_name->bind_param("i", $this->reason_id);
-			$stmt_insert_report->bind_param("iss", $this->reason_id, $this->question, $this->comment);
+			$stmt_insert_report->bind_param("isss", $this->reason_id, $this->question, $this->comment, $this->theme);
 			$stmt_delete_report->bind_param("i", $this->report_id);
 			$stmt_update_report_state->bind_param("ii", $this->state, $this->report_id);
 		}
@@ -90,11 +91,12 @@
 			$conn->close();
 		}
 
-		public function add_report($n_reason, $n_question, $n_comment) {
+		public function add_report($n_reason, $n_question, $n_comment, $n_theme) {
 			$stmt_insert_report =& $this->stmt_insert_report;
 			$this->reason_id = $n_reason;
 			$this->question = $n_question;
 			$this->comment = $n_comment;
+			$this->theme = $n_theme;
 			if (!$stmt_insert_report->execute())
 				echo "Execute failed: (" . $stmt_insert_report->errno . ") " . $stmt_insert_report->error;
 		}

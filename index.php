@@ -39,12 +39,18 @@
 		list($equation, $hashedCaptcha) = Captcha::calculate();
 		$all_reasons = $db->get_all_reasons();
 
-		if ($_POST["selReason"] && $_POST["txtQuestion"] && $_POST["txtCaptcha"]) {
+		if ($_POST["selReason"] && $_POST["txtQuestion"] && $_POST["txtCaptcha"] && $_POST["selTheme"]) {
 			if (!$db->check_reason_exists($_POST["selReason"])) {
 				echo '<div id="user_alert" class="alert alert-danger col-sm-8 col-sm-offset-2">Invalid type of mistake.</div>';
 			}
 			else if (Captcha::check($_POST["txtCaptcha"], $_POST["hashedCaptcha"])) {
-				$db->add_report($_POST["selReason"], $_POST["txtQuestion"], $_POST["txtComment"]);
+				if (in_array($_POST["selTheme"], Config::$themes)) {
+					$theme = $_POST["selTheme"];
+				}
+				else {
+					$theme = "default";
+				}
+				$db->add_report($_POST["selReason"], $_POST["txtQuestion"], $_POST["txtComment"], $theme);
 				echo '<div id="user_alert" class="alert alert-success col-sm-8 col-sm-offset-2">Report successfully submitted. ' .
 				'Thank you for notifying us about this mistake.</div>';
 			}
@@ -80,6 +86,16 @@
 					</select>
 				</div>
 				<div class="form-group">
+					<label for="selTheme" class="control-label">Question theme</label>
+					<select name="selTheme" id="selTheme" class="form-control">
+					<?php
+						foreach (Config::$themes as $theme) {
+							echo "<option value=\"$theme\">$theme</option>";
+						}
+					?>
+					</select>
+				</div>
+				<div class="form-group">
 					<label for="txtQuestion" class="control-label">Question where the mistake occured</label>
 					<input type="text" id="txtQuestion" name="txtQuestion" value="" class="form-control" 
 					placeholder="Copy the question from the IRC chat window">
@@ -101,6 +117,7 @@
 		</div>
 	</div>
 	</div>
+	<br/><br/><br/>
 	<footer class="footer">
 		<center>
 			<div id="rizon_footer">© <?php echo date("Y"); ?> Rizon</div>
