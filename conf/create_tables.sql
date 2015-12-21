@@ -1,17 +1,17 @@
 CREATE TABLE IF NOT EXISTS `reasons` (
-	`reason_id` SMALLINT NOT NULL,
+	`reason_id` SMALLINT NOT NULL AUTO_INCREMENT,
 	`reason_name` VARCHAR(32) NOT NULL,
 	PRIMARY KEY (`reason_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 INSERT IGNORE INTO `reasons` VALUES 
-	(1, 'Duplicate question'),
+	(1, 'Incorrect answer'),
 	(2, 'Wrong category'),
-	(3, 'Incorrect answer'),
+	(3, 'Duplicate question'),
 	(4, 'Typo in question'),
 	(5, 'Typo in answer'),
 	(6, 'Multiple possible answers'),
-	(99, 'Other');
+	(7, 'Other');
 
 CREATE TABLE IF NOT EXISTS `reports` (
 	`report_id` INT NOT NULL AUTO_INCREMENT,

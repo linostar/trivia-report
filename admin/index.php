@@ -16,6 +16,7 @@
 <body style="width: 100%; height: 100%;">
 <?php
 	require_once "utils.php";
+	require_once "../mysqli.php";
 
 	function display_admin_navbar() {
 		echo "navbar";
@@ -52,6 +53,9 @@
 <?php
 	}
 
+	$db = new Connection;
+	$db->start();
+
 	if ($_POST["txtUser"] && $_POST["txtPass"]) {
 		if (Utils::login($_POST["txtUser"], $_POST["txtPass"])) {
 			display_admin_navbar();
@@ -70,6 +74,8 @@
 	else {
 		display_login();
 	}
+
+	$db->stop();
 ?>
 	<script src="../js/jquery-2.1.4.min.js"></script>
 	<script src="../js/bootstrap.min.js"></script>

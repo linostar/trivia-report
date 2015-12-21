@@ -86,7 +86,7 @@
 					</select>
 				</div>
 				<div class="form-group">
-					<label for="selTheme" class="control-label">Question theme</label>
+					<label for="selTheme" class="control-label">Question category</label>
 					<select name="selTheme" id="selTheme" class="form-control">
 					<?php
 						foreach (Config::$themes as $theme) {
@@ -117,7 +117,7 @@
 		</div>
 	</div>
 	</div>
-	<br/><br/><br/>
+	<br/><br/>
 	<footer class="footer">
 		<center>
 			<div id="rizon_footer">© <?php echo date("Y"); ?> Rizon</div>
