@@ -1,3 +1,6 @@
+<?php
+	session_start();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,13 +15,17 @@
 </head>
 <body style="width: 100%; height: 100%;">
 <?php
-	if ($_POST["txtUser"] && $_POST["txtPass"]) {
-		echo "check user/pass";
+	require_once "utils.php";
+
+	function display_admin_navbar() {
+		echo "navbar";
 	}
-	else if ($_SESSION["username"] && $_SESSION["password"]) {
-		echo "logged in";
+
+	function display_admin_page() {
+		echo "admin";
 	}
-	else {
+
+	function display_login() {
 ?>
 		<div id="login_container">
 			<div class="panel panel-primary" id="panel_login">
@@ -43,6 +50,25 @@
 			</div>
 		</div>
 <?php
+	}
+
+	if ($_POST["txtUser"] && $_POST["txtPass"]) {
+		if (Utils::login($_POST["txtUser"], $_POST["txtPass"])) {
+			display_admin_navbar();
+			echo '<div class="alert alert-success">You have been successfully logged in.</div>';
+			display_admin_page();
+		}
+		else {
+			echo '<div class="alert alert-danger">Wrong username or password!</div>';
+			display_login();
+		}
+	}
+	if ($_SESSION["username"] && $_SESSION["password"]) {
+		display_admin_navbar();
+		display_admin_page();
+	}
+	else {
+		display_login();
 	}
 ?>
 	<script src="../js/jquery-2.1.4.min.js"></script>

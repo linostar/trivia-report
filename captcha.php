@@ -8,12 +8,12 @@
 			$num2 = rand(2, 12);
 			$sum = $num1 + $num2;
 			$equation = $num1 . " + " . $num2 . " = ?";
-			return array($equation, md5($sum . $key));
+			return array($equation, hash("sha256", $sum . $key));
 		}
 
 		public static function check($sum, $hash) {
 			$key = Config::$captcha_secret_key;
-			return ($hash == md5($sum . $key));
+			return ($hash == hash("sha256", $sum . $key));
 		}
 	}
 ?>
