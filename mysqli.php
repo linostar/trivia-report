@@ -44,17 +44,17 @@
 			$stmt_select_report_by_reason = $conn->prepare(
 				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=? AND rp.reason_id=re.reason_id " .
-				"ORDER BY rp.report_id DESC"
+				"ORDER BY rp.report_id DESC LIMIT ?, $this->count_per_page"
 				);
 			$stmt_select_report_by_state = $conn->prepare(
 				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=re.reason_id AND rp.state=? " .
-				"ORDER BY rp.report_id DESC"
+				"ORDER BY rp.report_id DESC LIMIT ?, $this->count_per_page"
 				);
 			$stmt_select_report_by_reason_state = $conn->prepare(
 				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=? AND rp.state=? " .
-				"AND rp.reason_id=re.reason_id ORDER BY rp.report_id DESC"
+				"AND rp.reason_id=re.reason_id ORDER BY rp.report_id DESC LIMIT ?, $this->count_per_page"
 				);
 			$stmt_select_reason_name = $conn->prepare("SELECT reason_name FROM reasons WHERE reason_id=?");
 			$stmt_insert_report = $conn->prepare("INSERT INTO reports (reason_id, question, comment, state, theme) VALUES (?, ?, ?, 0, ?)");
@@ -62,9 +62,9 @@
 			$stmt_update_report_state = $conn->prepare("UPDATE reports SET state=? WHERE report_id=?");
 
 			$stmt_select_report_by_id->bind_param("i", $this->report_id);
-			$stmt_select_report_by_reason->bind_param("i", $this->reason_id);
-			$stmt_select_report_by_state->bind_param("i", $this->state);
-			$stmt_select_report_by_reason_state->bind_param("ii", $this->reason_id, $this->state);
+			$stmt_select_report_by_reason->bind_param("ii", $this->reason_id, $this->page_num);
+			$stmt_select_report_by_state->bind_param("ii", $this->state, $this->page_num);
+			$stmt_select_report_by_reason_state->bind_param("iii", $this->reason_id, $this->state, $this->page_num);
 			$stmt_select_reason_name->bind_param("i", $this->reason_id);
 			$stmt_insert_report->bind_param("isss", $this->reason_id, $this->question, $this->comment, $this->theme);
 			$stmt_delete_report->bind_param("i", $this->report_id);
@@ -142,19 +142,21 @@
 			$this->page_num = ($n_page - 1) * $this->count_per_page;
 			return $conn->query("SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, " .
 				"rp.report_id FROM reports AS rp JOIN reasons AS re ON rp.reason_id = re.reason_id " .
-				"ORDER BY rp.report_id DESC LIMIT $this->page_num, 25");
+				"ORDER BY rp.report_id DESC LIMIT $this->page_num, $this->count_per_page");
 		}
 
-		public function filter_report_state($n_state) {
+		public function filter_report_state($n_state, $n_page = 1) {
 			$stmt_select_report_by_state =& $this->stmt_select_report_by_state;
+			$this->page_num = ($n_page - 1) * $this->count_per_page;
 			$this->state = $n_state;
 			if (!$stmt_select_report_by_state->execute())
 				echo "Execute failed: (" . $stmt_select_report_by_state->errno . ") " . $stmt_select_report_by_state->error;
 			return $stmt_select_report_by_state->get_result();
 		}
 
-		public function filter_report_reason($n_reason) {
+		public function filter_report_reason($n_reason, $n_page = 1) {
 			$stmt_select_report_by_reason =& $this->stmt_select_report_by_reason;
+			$this->page_num = ($n_page - 1) * $this->count_per_page;
 			$this->reason_id = $n_reason;
 			if (!$stmt_select_report_by_reason->execute())
 				echo "Execute failed: (" . $stmt_select_report_by_reason->errno . ") " . $stmt_select_report_by_reason->error;

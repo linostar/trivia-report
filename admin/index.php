@@ -76,22 +76,22 @@
 					<div class="panel-body">
 						<div class="filter_block">
 							<div class="filter_title">Report state</div>
-							<div class="filter_lines"><a href="?filter=state&fsub=0">NEW</a></div>
-							<div class="filter_lines"><a href="?filter=state&fsub=1">FIXED</a></div>
-							<div class="filter_lines"><a href="?filter=state&fsub=2">DUPLICATE</a></div>
-							<div class="filter_lines"><a href="?filter=state&fsub=3">INVALID</a></div>
-							<div class="filter_lines"><a href="?filter=state&fsub=4">WONTFIX</a></div>
-							<div class="filter_lines"><a href="?filter=state&fsub=-1"><b>ALL</b></a></div>	
+							<div class="filter_lines"><a href="?filter=state&sid=0">NEW</a></div>
+							<div class="filter_lines"><a href="?filter=state&sid=1">FIXED</a></div>
+							<div class="filter_lines"><a href="?filter=state&sid=2">DUPLICATE</a></div>
+							<div class="filter_lines"><a href="?filter=state&sid=3">INVALID</a></div>
+							<div class="filter_lines"><a href="?filter=state&sid=4">WONTFIX</a></div>
+							<div class="filter_lines"><a href="?filter=state&sid=-1"><b>ALL</b></a></div>	
 						</div>
 						<div class="filter_block">
 							<div class="filter_title">Mistake type</div>
 <?php
 	global $all_reasons;
 	while ($row = $all_reasons->fetch_array(MYSQLI_NUM)) {
-		echo "<div class=\"filter_lines\"><a href=\"?filter=reason&fsub=$row[0]\">$row[1]</a></div>";
+		echo "<div class=\"filter_lines\"><a href=\"?filter=reason&rid=$row[0]\">$row[1]</a></div>";
 	}
 ?>
-							<div class="filter_lines"><a href="?filter=reason&fsub=-1"><b>ALL</b></a></div>
+							<div class="filter_lines"><a href="?filter=reason&rid=-1"><b>ALL</b></a></div>
 						</div>
 					</div>
 				</div>
@@ -118,8 +118,8 @@
 	global $state_types;
 
 	if ($_GET["filter"] == "state") {
-		if ($_GET["fsub"] >= 0 && $_GET["fsub"] <= 4) {
-			$reports = $db->filter_report_state($_GET["fsub"]);
+		if ($_GET["sid"] >= 0 && $_GET["sid"] <= 4) {
+			$reports = $db->filter_report_state($_GET["sid"]);
 			display_reports($reports);
 		}
 		else {
@@ -128,8 +128,8 @@
 		}
 	}
 	else if ($_GET["filter"] == "reason") {
-		if ($db->check_reason_exists($_GET["fsub"])) {
-			$reports = $db->filter_report_reason($_GET["fsub"]);
+		if ($db->check_reason_exists($_GET["rid"])) {
+			$reports = $db->filter_report_reason($_GET["rid"]);
 			display_reports($reports);
 		}
 		else {
