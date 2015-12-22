@@ -18,6 +18,8 @@
 		private $comment;
 		private $state;
 		private $theme;
+		private $page_num;
+		private $count_per_page = 25;
 
 		public function start() {
 			$conn =& $this->conn;
@@ -36,21 +38,21 @@
 			}
 
 			$stmt_select_report_by_id = $conn->prepare(
-				"SELECT rp.question, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
+				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=re.reason_id AND rp.report_id=?"
 				);
 			$stmt_select_report_by_reason = $conn->prepare(
-				"SELECT rp.question, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
+				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=? AND rp.reason_id=re.reason_id " .
 				"ORDER BY rp.report_id DESC"
 				);
 			$stmt_select_report_by_state = $conn->prepare(
-				"SELECT rp.question, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
+				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=re.reason_id AND rp.state=? " .
 				"ORDER BY rp.report_id DESC"
 				);
 			$stmt_select_report_by_reason_state = $conn->prepare(
-				"SELECT rp.question, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
+				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=? AND rp.state=? " .
 				"AND rp.reason_id=re.reason_id ORDER BY rp.report_id DESC"
 				);
@@ -124,7 +126,8 @@
 		public function check_reason_exists($n_reason) {
 			$stmt_select_reason_name =& $this->stmt_select_reason_name;
 			$this->reason_id = $n_reason;
-			$stmt_select_reason_name->execute();
+			if (!$stmt_select_reason_name->execute())
+				echo "Execute failed: (" . $stmt_select_reason_name->errno . ") " . $stmt_select_reason_name->error;
 			$stmt_select_reason_name->store_result();
 			$num_rows = $stmt_select_reason_name->num_rows;
 			$stmt_select_reason_name->free_result();
@@ -132,6 +135,14 @@
 				return true;
 			else
 				return false;
+		}
+
+		public function get_reports($n_page = 1) {
+			$conn =& $this->conn;
+			$this->page_num = ($n_page - 1) * $this->count_per_page;
+			return $conn->query("SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, " .
+				"rp.report_id FROM reports AS rp JOIN reasons AS re ON rp.reason_id = re.reason_id " .
+				"ORDER BY rp.report_id DESC LIMIT $this->page_num, 25");
 		}
 	}
 ?>

@@ -87,3 +87,31 @@ body {
 .filter_lines {
 	padding-bottom: 0.1em;
 }
+
+#table_reports td {
+	vertical-align: middle;
+}
+
+.middle {
+	text-align: center;
+}
+
+.NEW {
+	background-color: #dd6666;
+}
+
+.FIXED {
+	background-color: #66dd66;
+}
+
+.DUPLICATE {
+	background-color: #bbbbbb;
+}
+
+.INVALID {
+	background-color: #8888dd;
+}
+
+.WONTFIX {
+	background-color: #dddd88;
+}

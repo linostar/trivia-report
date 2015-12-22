@@ -18,6 +18,8 @@
 	require_once "utils.php";
 	require_once "../mysqli.php";
 
+	$state_types = array(0 => "NEW", 1 => "FIXED", 2 => "DUPLICATE", 3 => "INVALID", 4 => "WONTFIX");
+
 	$db = new Connection;
 	$db->start();
 	$all_reasons = $db->get_all_reasons();
@@ -87,6 +89,39 @@
 						<div class="panel-title">Reports</div>
 					</div>
 					<div class="panel-body">
+						<table class="table" id="table_reports">
+							<thead>
+								<tr>
+									<th width="50%">Question</th>
+									<th class="middle">Category</th>
+									<th class="middle">Mistake</th>
+									<th class="middle">Added on</th>
+									<th class="middle">State</th>
+								</tr>
+							</thead>
+							<tbody>
+<?php
+	global $db;
+	global $state_types;
+
+	if ($_GET["filter"] == "state") {
+		echo "1";
+	}
+	else if ($_GET["filter"] == "reason") {
+		echo "2";
+	}
+	else {
+		$reports = $db->get_reports();
+		while ($row = $reports->fetch_array(MYSQLI_NUM)) {
+			$st = $row[3];
+			echo "<tr class=\"\"><td><a href=\"report.php?id=$row[6]\">$row[0]</a></td>" .
+			"<td class=\"middle\">$row[1]</td><td class=\"middle\">$row[5]</td><td class=\"middle\">$row[4]</td>" .
+			"<td class=\"middle $state_types[$st]\">$state_types[$st]</td></tr>";
+		}
+	}
+?>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
