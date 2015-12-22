@@ -38,21 +38,21 @@
 			}
 
 			$stmt_select_report_by_id = $conn->prepare(
-				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
+				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=re.reason_id AND rp.report_id=?"
 				);
 			$stmt_select_report_by_reason = $conn->prepare(
-				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
+				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=? AND rp.reason_id=re.reason_id " .
 				"ORDER BY rp.report_id DESC"
 				);
 			$stmt_select_report_by_state = $conn->prepare(
-				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
+				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=re.reason_id AND rp.state=? " .
 				"ORDER BY rp.report_id DESC"
 				);
 			$stmt_select_report_by_reason_state = $conn->prepare(
-				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name " . 
+				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=? AND rp.state=? " .
 				"AND rp.reason_id=re.reason_id ORDER BY rp.report_id DESC"
 				);
@@ -123,7 +123,7 @@
 			return $conn->query("SELECT reason_id, reason_name FROM reasons ORDER BY reason_id ASC");
 		}
 
-		public function check_reason_exists($n_reason) {
+		public function check_reason_exists($n_reason = -1) {
 			$stmt_select_reason_name =& $this->stmt_select_reason_name;
 			$this->reason_id = $n_reason;
 			if (!$stmt_select_reason_name->execute())
@@ -143,6 +143,22 @@
 			return $conn->query("SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, " .
 				"rp.report_id FROM reports AS rp JOIN reasons AS re ON rp.reason_id = re.reason_id " .
 				"ORDER BY rp.report_id DESC LIMIT $this->page_num, 25");
+		}
+
+		public function filter_report_state($n_state) {
+			$stmt_select_report_by_state =& $this->stmt_select_report_by_state;
+			$this->state = $n_state;
+			if (!$stmt_select_report_by_state->execute())
+				echo "Execute failed: (" . $stmt_select_report_by_state->errno . ") " . $stmt_select_report_by_state->error;
+			return $stmt_select_report_by_state->get_result();
+		}
+
+		public function filter_report_reason($n_reason) {
+			$stmt_select_report_by_reason =& $this->stmt_select_report_by_reason;
+			$this->reason_id = $n_reason;
+			if (!$stmt_select_report_by_reason->execute())
+				echo "Execute failed: (" . $stmt_select_report_by_reason->errno . ") " . $stmt_select_report_by_reason->error;
+			return $stmt_select_report_by_reason->get_result();
 		}
 	}
 ?>

@@ -51,6 +51,19 @@
 <?php
 	}
 
+	function display_reports($reports) {
+		global $state_types;
+		while ($row = $reports->fetch_array(MYSQLI_NUM)) {
+			$st = $row[3];
+			echo "<tr><td><a href=\"report.php?id=$row[6]\">$row[0]</a></td>" .
+			"<td class=\"middle\">$row[1]</td><td class=\"middle\">$row[5]</td><td class=\"middle\">$row[4]</td>" .
+			"<td class=\"middle $state_types[$st]\">$state_types[$st]</td></tr>";
+		}
+		if (!$reports->num_rows) {
+			echo "<tr><td colspan=\"5\" class=\"middle empty\"><b>Empty</b></tr>";
+		}
+	}
+
 	function display_admin_page() {
 ?>
 	<div class="container">
@@ -105,19 +118,28 @@
 	global $state_types;
 
 	if ($_GET["filter"] == "state") {
-		echo "1";
+		if ($_GET["fsub"] >= 0 && $_GET["fsub"] <= 4) {
+			$reports = $db->filter_report_state($_GET["fsub"]);
+			display_reports($reports);
+		}
+		else {
+			$reports = $db->get_reports();
+			display_reports($reports);
+		}
 	}
 	else if ($_GET["filter"] == "reason") {
-		echo "2";
+		if ($db->check_reason_exists($_GET["fsub"])) {
+			$reports = $db->filter_report_reason($_GET["fsub"]);
+			display_reports($reports);
+		}
+		else {
+			$reports = $db->get_reports();
+			display_reports($reports);
+		}
 	}
 	else {
 		$reports = $db->get_reports();
-		while ($row = $reports->fetch_array(MYSQLI_NUM)) {
-			$st = $row[3];
-			echo "<tr class=\"\"><td><a href=\"report.php?id=$row[6]\">$row[0]</a></td>" .
-			"<td class=\"middle\">$row[1]</td><td class=\"middle\">$row[5]</td><td class=\"middle\">$row[4]</td>" .
-			"<td class=\"middle $state_types[$st]\">$state_types[$st]</td></tr>";
-		}
+		display_reports($reports);
 	}
 ?>
 							</tbody>

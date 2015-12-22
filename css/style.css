@@ -115,3 +115,7 @@ body {
 .WONTFIX {
 	background-color: #dddd88;
 }
+
+.empty {
+	background-color: #eeeeee;
+}
