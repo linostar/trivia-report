@@ -23,6 +23,12 @@
 	$db = new Connection;
 	$db->start();
 	$all_reasons = $db->get_all_reasons();
+	$reason_exists = $db->check_reason_exists($_GET["rid"]);
+
+	while ($row = $all_reasons->fetch_array(MYSQLI_NUM)) {
+		$key = $row[0];
+		$reason_names[$key] = $row[1];
+	}
 
 	function display_admin_navbar() {
 ?>
@@ -49,6 +55,24 @@
 		</div>
 	</nav>
 <?php
+	}
+
+	function get_label($filter, $fsub) {
+		global $state_types;
+		global $reason_names;
+		global $reason_exists;
+
+		if ($filter == "state") {
+			if ($fsub >= 0 and $fsub <= 4) {
+				return $state_types[$fsub];
+			}
+		}
+		else if ($filter == "reason") {
+			if ($reason_exists) {
+				return $reason_names[$fsub];
+			}
+		}
+		return "ALL";
 	}
 
 	function display_reports($reports) {
@@ -86,9 +110,9 @@
 						<div class="filter_block">
 							<div class="filter_title">Mistake type</div>
 <?php
-	global $all_reasons;
-	while ($row = $all_reasons->fetch_array(MYSQLI_NUM)) {
-		echo "<div class=\"filter_lines\"><a href=\"?filter=reason&rid=$row[0]\">$row[1]</a></div>";
+	global $reason_names;
+	foreach ($reason_names as $key => $value) {
+		echo "<div class=\"filter_lines\"><a href=\"?filter=reason&rid=$key\">$value</a></div>";
 	}
 ?>
 							<div class="filter_lines"><a href="?filter=reason&rid=-1"><b>ALL</b></a></div>
@@ -99,7 +123,16 @@
 			<div style="width: 80%;">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<div class="panel-title">Reports</div>
+						<div class="panel-title">Reports
+<?php
+	if ($_GET["sid"]) {
+		echo '&nbsp;&nbsp;<span class="label label-success">' . get_label($_GET["filter"], $_GET["sid"]) . '</span>';
+	}
+	else if ($_GET["rid"]) {
+		echo '&nbsp;&nbsp;<span class="label label-success">' . get_label($_GET["filter"], $_GET["rid"]) . '</span>';
+	}
+?>
+						</div>
 					</div>
 					<div class="panel-body">
 						<table class="table" id="table_reports">
@@ -116,6 +149,7 @@
 <?php
 	global $db;
 	global $state_types;
+	global $reason_exists;
 
 	if ($_GET["filter"] == "state") {
 		if ($_GET["sid"] >= 0 && $_GET["sid"] <= 4) {
@@ -128,7 +162,7 @@
 		}
 	}
 	else if ($_GET["filter"] == "reason") {
-		if ($db->check_reason_exists($_GET["rid"])) {
+		if ($reason_exists) {
 			$reports = $db->filter_report_reason($_GET["rid"]);
 			display_reports($reports);
 		}
