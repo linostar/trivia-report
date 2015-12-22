@@ -140,27 +140,33 @@
 		public function get_reports($n_page = 1) {
 			$conn =& $this->conn;
 			$this->page_num = ($n_page - 1) * $this->count_per_page;
-			return $conn->query("SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, " .
+			$result = $conn->query("SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, " .
 				"rp.report_id FROM reports AS rp JOIN reasons AS re ON rp.reason_id = re.reason_id " .
 				"ORDER BY rp.report_id DESC LIMIT $this->page_num, $this->count_per_page");
+			$count = $conn->query("SELECT COUNT(*) FROM reports");
+			return array($result, $count->fetch_array()[0]);
 		}
 
 		public function filter_report_state($n_state, $n_page = 1) {
+			$conn =& $this->conn;
+			$count = $conn->query("SELECT COUNT(*) FROM reports WHERE state=$n_state");
 			$stmt_select_report_by_state =& $this->stmt_select_report_by_state;
 			$this->page_num = ($n_page - 1) * $this->count_per_page;
 			$this->state = $n_state;
 			if (!$stmt_select_report_by_state->execute())
 				echo "Execute failed: (" . $stmt_select_report_by_state->errno . ") " . $stmt_select_report_by_state->error;
-			return $stmt_select_report_by_state->get_result();
+			return array($stmt_select_report_by_state->get_result(), $count->fetch_array()[0]);
 		}
 
 		public function filter_report_reason($n_reason, $n_page = 1) {
+			$conn =& $this->conn;
+			$count = $conn->query("SELECT COUNT(*) FROM reports WHERE reason_id=$n_reason");
 			$stmt_select_report_by_reason =& $this->stmt_select_report_by_reason;
 			$this->page_num = ($n_page - 1) * $this->count_per_page;
 			$this->reason_id = $n_reason;
 			if (!$stmt_select_report_by_reason->execute())
 				echo "Execute failed: (" . $stmt_select_report_by_reason->errno . ") " . $stmt_select_report_by_reason->error;
-			return $stmt_select_report_by_reason->get_result();
+			return array($stmt_select_report_by_reason->get_result(), $count->fetch_array()[0]);
 		}
 	}
 ?>

@@ -19,6 +19,9 @@
 	require_once "../mysqli.php";
 
 	$state_types = array(0 => "NEW", 1 => "FIXED", 2 => "DUPLICATE", 3 => "INVALID", 4 => "WONTFIX");
+	$COUNT_PER_PAGE = 25;
+	$count_rows = 0;
+	$current_page = 1;
 
 	$db = new Connection;
 	$db->start();
@@ -150,36 +153,73 @@
 	global $db;
 	global $state_types;
 	global $reason_exists;
+	global $count_rows;
+	global $current_page;
+	global $COUNT_PER_PAGE;
 
 	if ($_GET["filter"] == "state") {
 		if ($_GET["sid"] >= 0 && $_GET["sid"] <= 4) {
-			$reports = $db->filter_report_state($_GET["sid"]);
+			list($reports, $count_rows) = $db->filter_report_state($_GET["sid"]);
 			display_reports($reports);
 		}
 		else {
-			$reports = $db->get_reports();
+			list($reports, $count_rows) = $db->get_reports();
 			display_reports($reports);
 		}
 	}
 	else if ($_GET["filter"] == "reason") {
 		if ($reason_exists) {
-			$reports = $db->filter_report_reason($_GET["rid"]);
+			list($reports, $count_rows) = $db->filter_report_reason($_GET["rid"]);
 			display_reports($reports);
 		}
 		else {
-			$reports = $db->get_reports();
+			list($reports, $count_rows) = $db->get_reports();
 			display_reports($reports);
 		}
 	}
 	else {
-		$reports = $db->get_reports();
+		list($reports, $count_rows) = $db->get_reports();
 		display_reports($reports);
 	}
+	$count_pages = ceil($count_rows / $COUNT_PER_PAGE);
+	if ($count_pages == 0)
+		$count_pages = 1;
 ?>
 							</tbody>
 						</table>
 					</div>
 				</div>
+				<center>
+					<nav>
+						<ul class="pagination">
+						<li>
+							<a href="#" aria-label="Previous">
+								<span aria-hidden="true">&laquo;</span>
+							</a>
+						</li>
+<?php
+	if ($_GET["page"]) {
+		if (is_numeric($_GET["page"])) {
+			$current_page = intval($_GET["page"]);
+		}
+	}
+	for ($i=1; $i<=$count_pages; $i++) {
+		if ($i == $current_page) {
+			echo "<li class=\"active\"><a href=\"?page=$i\">$i</a></li>";
+		}
+		else {
+			echo "<li><a href=\"?page=$i\">$i</a></li>";
+		}
+	}
+?>
+						<li>
+							<a href="#" aria-label="Next">
+								<span aria-hidden="true">&raquo;</span>
+							</a>
+						</li>
+						</ul>
+					</nav>
+				</center>
 			</div>
 		</div>
 	</div>
