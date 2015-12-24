@@ -22,6 +22,5 @@
 		public static $conn_trivia_db = "";
 		public static $conn_trivia_user = "";
 		public static $conn_trivia_pass = "";
-		public static $conn_trivia_table_prefix = "trivia_questions_";
 	}
 ?>

@@ -190,30 +190,51 @@
 					</div>
 				</div>
 				<center>
+<?php
+	$class_previous = "";
+	$class_next = "";
+	if ($_GET["page"] && is_numeric($_GET["page"])) {
+		$current_page = intval($_GET["page"]);
+	}
+	if ($_GET["filter"] && $_GET["rid"]) {
+		$qstring = "filter=" . htmlentities($_GET['filter']) . "&rid=" . htmlentities($_GET['rid']) . "&page=";
+	}
+	else if ($_GET["filter"] && $_GET["sid"]) {
+		$qstring = "filter=" . htmlentities($_GET['filter']) . "&sid=" . htmlentities($_GET['sid']) . "&page=";
+	}
+	else {
+		$qstring = "page=";
+	}
+	$href_previous = "href=\"index.php?" . $qstring . ($current_page - 1) ."\"";
+	$href_next = "href=\"index.php?" . $qstring . ($current_page + 1) ."\"";
+	if ($current_page == 1) {
+		$class_previous = 'class="disabled"';
+		$href_previous = "";
+	}
+	if ($current_page == $count_pages) {
+		$class_next = 'class="disabled"';
+		$href_next = "";
+	}
+?>
 					<nav>
 						<ul class="pagination">
-						<li>
-							<a href="#" aria-label="Previous">
+						<li <?php echo $class_previous; ?>>
+							<a <?php echo $href_previous; ?> aria-label="Previous">
 								<span aria-hidden="true">&laquo;</span>
 							</a>
 						</li>
 <?php
-	if ($_GET["page"]) {
-		if (is_numeric($_GET["page"])) {
-			$current_page = intval($_GET["page"]);
-		}
-	}
 	for ($i=1; $i<=$count_pages; $i++) {
 		if ($i == $current_page) {
-			echo "<li class=\"active\"><a href=\"?page=$i\">$i</a></li>";
+			echo "<li class=\"active\"><a href=\"index.php?$qstring$i\">$i</a></li>";
 		}
 		else {
-			echo "<li><a href=\"?page=$i\">$i</a></li>";
+			echo "<li><a href=\"index.php?$qstring$i\">$i</a></li>";
 		}
 	}
 ?>
-						<li>
-							<a href="#" aria-label="Next">
+						<li <?php echo $class_next; ?>>
+							<a <?php echo $href_next; ?> aria-label="Next">
 								<span aria-hidden="true">&raquo;</span>
 							</a>
 						</li>
