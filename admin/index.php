@@ -157,33 +157,40 @@
 	global $current_page;
 	global $COUNT_PER_PAGE;
 
+	if ($_GET["page"] && is_numeric($_GET["page"])) {
+		$current_page = intval($_GET["page"]);
+	}
+	
 	if ($_GET["filter"] == "state") {
 		if ($_GET["sid"] >= 0 && $_GET["sid"] <= 4) {
-			list($reports, $count_rows) = $db->filter_report_state($_GET["sid"]);
+			list($reports, $count_rows) = $db->filter_report_state($_GET["sid"], $current_page);
 			display_reports($reports);
 		}
 		else {
-			list($reports, $count_rows) = $db->get_reports();
+			list($reports, $count_rows) = $db->get_reports($current_page);
 			display_reports($reports);
 		}
 	}
 	else if ($_GET["filter"] == "reason") {
 		if ($reason_exists) {
-			list($reports, $count_rows) = $db->filter_report_reason($_GET["rid"]);
+			list($reports, $count_rows) = $db->filter_report_reason($_GET["rid"], $current_page);
 			display_reports($reports);
 		}
 		else {
-			list($reports, $count_rows) = $db->get_reports();
+			list($reports, $count_rows) = $db->get_reports($current_page);
 			display_reports($reports);
 		}
 	}
 	else {
-		list($reports, $count_rows) = $db->get_reports();
+		list($reports, $count_rows) = $db->get_reports($current_page);
 		display_reports($reports);
 	}
+
 	$count_pages = ceil($count_rows / $COUNT_PER_PAGE);
-	if ($count_pages == 0)
+	if ($count_pages == 0) {
 		$count_pages = 1;
+	}
+	$current_page = max(1, min($count_pages, $current_page));
 ?>
 							</tbody>
 						</table>
@@ -193,9 +200,6 @@
 <?php
 	$class_previous = "";
 	$class_next = "";
-	if ($_GET["page"] && is_numeric($_GET["page"])) {
-		$current_page = intval($_GET["page"]);
-	}
 	if ($_GET["filter"] && $_GET["rid"]) {
 		$qstring = "filter=" . htmlentities($_GET['filter']) . "&rid=" . htmlentities($_GET['rid']) . "&page=";
 	}
