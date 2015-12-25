@@ -61,6 +61,14 @@
 				<ul class="nav navbar-nav">
 					<li><a href="https://rizon.net/">Rizon Home</a></li>
 					<li><a href="../index.php">Trivia Reporter</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
+						aria-expanded="false">Trivia Editor <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="question.php">Manage Questions</a></li>
+							<li><a href="theme.php">Manage Categories</a></li>
+						</ul>
+					</li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li ><a href="?action=logout">Logout</a></li>
