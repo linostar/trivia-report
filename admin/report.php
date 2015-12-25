@@ -24,10 +24,70 @@
 	$db->start();
 	$all_reasons = $db->get_all_reasons();
 
+	function display_report_page($rep_id) {
+		global $db;
+		global $all_reasons;
+		global $state_types;
+		$report = $db->get_single_report($rep_id);
+		$report = $report->fetch_assoc();
+		if ($report) {
+?>
+	<div class="container">
+		<div class="col-sm-8 col-sm-offset-2">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<div class="panel-title">Report</div>
+				</div>
+			<table class="table">
+				<tr>
+					<td width="20%"><b>Question:</b></td>
+					<td><?php echo $report["question"]; ?></td>
+				</tr>
+				<tr>
+					<td><b>Category:</b></td>
+					<td><?php echo $report["theme"]; ?></td>
+				</tr>
+				<tr>
+					<td><b>Mistake type:</b></td>
+					<td><?php echo $report["reason_name"]; ?></td>
+				</tr>
+				<tr>
+					<td><b>Date Reported:</b></td>
+					<td><?php echo $report["cdate"]; ?></td>
+				</tr>
+				<tr>
+					<td><b>Comment:</b></td>
+					<td><?php echo $report["comment"]; ?></td>
+				</tr>
+			</table>
+			</div>
+			<form id="form_change_report_state" action="report.php" method="post">
+				<div class="form-group">
+					<label for="selState" class="control-label">Change state to</label>
+					<select id="selState" name="selState" class="form-control" 
+					style="display: inline-block; width: 20%; margin-left: 0.5em;">
+<?php
+	foreach ($state_types as $key => $value) {
+		echo "<option value=\"$key\">$value</option>";
+	}
+?>
+					</select>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-primary">Save Report</button>
+					<a href="index.php" class="btn btn-default">Back</a>
+				</div>
+			</form>
+		</div>
+	</div>
+<?php
+		}
+	}
+
 	if ($_POST["txtUser"] && $_POST["txtPass"]) {
 		if (Utils::login($_POST["txtUser"], $_POST["txtPass"])) {
 			Utils::display_admin_navbar();
-			//display_report_page();
+			display_report_page($_GET["id"]);
 		}
 		else {
 			echo '<center><div class="alert alert-danger panel_login">Wrong username or password!</div></center>';
@@ -41,7 +101,7 @@
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
 		Utils::display_admin_navbar();
-		//display_report_page();
+		display_report_page($_GET["id"]);
 	}
 	else {
 		Utils::display_login();

@@ -38,7 +38,7 @@
 			}
 
 			$stmt_select_report_by_id = $conn->prepare(
-				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
+				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date) AS cdate, re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=re.reason_id AND rp.report_id=?"
 				);
 			$stmt_select_report_by_reason = $conn->prepare(
@@ -135,6 +135,14 @@
 				return true;
 			else
 				return false;
+		}
+
+		public function get_single_report($n_report) {
+			$stmt_select_report_by_id =& $this->stmt_select_report_by_id;
+			$this->report_id = $n_report;
+			if (!$stmt_select_report_by_id->execute())
+				echo "Execute failed: (" . $stmt_select_report_by_id->errno . ") " . $stmt_select_report_by_id->error;
+			return $stmt_select_report_by_id->get_result();
 		}
 
 		public function get_reports($n_page = 1) {
