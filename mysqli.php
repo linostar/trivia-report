@@ -99,23 +99,32 @@
 			$this->question = $n_question;
 			$this->comment = $n_comment;
 			$this->theme = $n_theme;
-			if (!$stmt_insert_report->execute())
+			if (!$stmt_insert_report->execute()) {
 				echo "Execute failed: (" . $stmt_insert_report->errno . ") " . $stmt_insert_report->error;
+				return false;
+			}
+			return true;
 		}
 
 		public function delete_report($n_report) {
 			$stmt_delete_report =& $this->stmt_delete_report;
 			$this->report_id = $n_report;
-			if(!$stmt_delete_report->execute())
+			if(!$stmt_delete_report->execute()) {
 				echo "Execute failed: (" . $stmt_delete_report->errno . ") " . $stmt_delete_report->error;
+				return false;
+			}
+			return true;
 		}
 
 		public function update_state($n_report, $n_state) {
 			$stmt_update_report_state =& $this->stmt_update_report_state;
 			$this->report_id = $n_report;
 			$this->state = $n_state;
-			if (!$stmt_update_report_state->execute())
+			if (!$stmt_update_report_state->execute()) {
 				echo "Execute failed: (" . $stmt_update_report_state->errno . ") " . $stmt_update_report_state->error;
+				return false;
+			}
+			return true;
 		}
 
 		public function get_all_reasons() {

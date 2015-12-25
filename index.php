@@ -50,9 +50,14 @@
 				else {
 					$theme = "default";
 				}
-				$db->add_report($_POST["selReason"], $_POST["txtQuestion"], $_POST["txtComment"], $theme);
-				echo '<div id="user_alert" class="alert alert-success col-sm-8 col-sm-offset-2">Report successfully submitted. ' .
-				'Thank you for notifying us about this mistake.</div>';
+				if ($db->add_report($_POST["selReason"], $_POST["txtQuestion"], $_POST["txtComment"], $theme)) {
+					echo '<div id="user_alert" class="alert alert-success col-sm-8 col-sm-offset-2">Report successfully submitted. ' .
+					'Thank you for notifying us about this mistake.</div>';
+				}
+				else {
+					echo '<div id="user_alert" class="alert alert-danger col-sm-8 col-sm-offset-2">Error occured when submitting report. ' .
+					'Please try again later.</div>';
+				}
 			}
 			else {
 				echo '<div id="user_alert" class="alert alert-danger col-sm-8 col-sm-offset-2">The answer to the equation is ' .

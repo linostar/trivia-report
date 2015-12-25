@@ -61,14 +61,19 @@
 				</tr>
 			</table>
 			</div>
-			<form id="form_change_report_state" action="report.php" method="post">
+			<form id="form_change_report_state" action="report.php?id=<?php echo $_GET["id"]; ?>" method="post">
 				<div class="form-group">
 					<label for="selState" class="control-label">Change state to</label>
 					<select id="selState" name="selState" class="form-control" 
 					style="display: inline-block; width: 20%; margin-left: 0.5em;">
 <?php
 	foreach ($state_types as $key => $value) {
-		echo "<option value=\"$key\">$value</option>";
+		if ($key == $report["state"]) {
+			echo "<option value=\"$key\" selected>$value</option>";
+		}
+		else {
+			echo "<option value=\"$key\">$value</option>";
+		}
 	}
 ?>
 					</select>
@@ -98,6 +103,18 @@
 		Utils::logout();
 		echo '<center><div class="alert alert-info panel_login">You have been successfully logged out.</div></center>';
 		Utils::display_login();
+	}
+	else if ($_POST["selState"] && $_GET["id"]) {
+		Utils::display_admin_navbar();
+		echo '<div class="container">';
+		if ($db->update_state($_GET["id"], $_POST["selState"])) {
+			echo '<div class="alert alert-success col-sm-8 col-sm-offset-2">Report state successfully updated.</div>';
+		}
+		else {
+			echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Error while trying to update report state. Please go easy on the developer.</div>';
+		}
+		echo '</div>';
+		display_report_page($_GET["id"]);
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
 		Utils::display_admin_navbar();
