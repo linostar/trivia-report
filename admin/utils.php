@@ -55,11 +55,11 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" style="background-color: black;" href="index.php">Admin Panel</a>
+				<a class="navbar-brand" style="background-color: black;">Admin Panel</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="https://rizon.net/">Rizon Home</a></li>
+					<li><a href="index.php">Admin Home</a></li>
 					<li><a href="../index.php">Trivia Reporter</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
