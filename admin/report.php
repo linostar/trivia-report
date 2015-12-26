@@ -22,9 +22,18 @@
 
 	$db = new Connection;
 	$db->start();
+	$trivia = new Trivia_DB;
+	$trivia->start();
 	$all_reasons = $db->get_all_reasons();
 
-	function display_report_page($rep_id) {
+	function display_question_panel($question) {
+		global $trivia;
+		$question_dict = $trivia->get_question($question);
+		$question_dict = $question_dict->fetch_assoc();
+		print_r($question_dict);
+	}
+
+	function display_report_panel($rep_id) {
 		global $db;
 		global $all_reasons;
 		global $state_types;
@@ -87,12 +96,14 @@
 	</div>
 <?php
 		}
+		return $report["question"];
 	}
 
 	if ($_POST["txtUser"] && $_POST["txtPass"]) {
 		if (Utils::login($_POST["txtUser"], $_POST["txtPass"])) {
 			Utils::display_admin_navbar();
-			display_report_page($_GET["id"]);
+			$question = display_report_panel($_GET["id"]);
+			display_question_panel($question);
 		}
 		else {
 			echo '<center><div class="alert alert-danger panel_login">Wrong username or password!</div></center>';
@@ -114,17 +125,20 @@
 			echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Error while trying to update report state. Please go easy on the developer.</div>';
 		}
 		echo '</div>';
-		display_report_page($_GET["id"]);
+		$question = display_report_panel($_GET["id"]);
+		display_question_panel($question);
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
 		Utils::display_admin_navbar();
-		display_report_page($_GET["id"]);
+		$question = display_report_panel($_GET["id"]);
+		display_question_panel($question);
 	}
 	else {
 		Utils::display_login();
 	}
 
 	$db->stop();
+	$trivia->stop();
 ?>
 	<br/><br/>
 	<footer class="footer">

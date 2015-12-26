@@ -188,4 +188,62 @@
 			return array($stmt_select_report_by_reason->get_result(), $count->fetch_array()[0]);
 		}
 	}
+
+	class Trivia_DB {
+		private $conn;
+		private $stmt_select_question;
+		private $stmt_insert_question;
+		private $stmt_update_question;
+		private $stmt_delete_question;
+		private $question;
+		private $answer;
+		private $theme;
+		private $question_id;
+
+		public function start() {
+			$conn =& $this->conn;
+			$stmt_select_question =& $this->stmt_select_question;
+			$stmt_insert_question =& $this->stmt_insert_question;
+			$stmt_update_question =& $this->stmt_update_question;
+			$stmt_delete_question =& $this->stmt_delete_question;
+
+			$conn = new mysqli(Config::$conn_trivia_host, Config::$conn_trivia_user, Config::$conn_trivia_pass, Config::$conn_trivia_db);
+			if ($conn->connect_error) {
+				die("Connection failed: " . $conn->connect_error);
+			}
+
+			$stmt_select_question = $conn->prepare("SELECT * FROM `trivia_questions` WHERE `question` like ?");
+			$stmt_insert_question = $conn->prepare("INSERT INTO `trivia_questions` (`question`, `answer`, `theme_id`) " .
+				"VALUES (?, ?, ?)");
+			$stmt_update_question = $conn->prepare("UPDATE `trivia_questions` SET `question`=?, `answer`=?, `theme_id`=? WHERE `id`=?");
+			$stmt_delete_question = $conn->prepare("DELETE FROM `trivia_questions` WHERE `id`=?");
+
+			$stmt_select_question->bind_param("s", $this->question);
+			$stmt_insert_question->bind_param("ssi", $this->question, $this->answer, $this->theme);
+			$stmt_update_question->bind_param("ssii", $this->question, $this->answer, $this->theme, $this->question_id);
+			$stmt_delete_question->bind_param("i", $this->question_id);
+		}
+
+		public function stop() {
+			$conn =& $this->conn;
+			$stmt_select_question =& $this->stmt_select_question;
+			$stmt_insert_question =& $this->stmt_insert_question;
+			$stmt_update_question =& $this->stmt_update_question;
+			$stmt_delete_question =& $this->stmt_delete_question;
+			$stmt_select_question->close();
+			$stmt_insert_question->close();
+			$stmt_update_question->close();
+			$stmt_delete_question->close();
+			$conn->close();
+		}
+
+		public function get_question($n_question) {
+			$stmt_select_question =& $this->stmt_select_question;
+			$this->question = trim($n_question, ' \t\n\r\0\x0B.!,;:?[](){}<>%');
+			$this->question = "%" . $this->question . "%";
+			if (!$stmt_select_question->execute())
+				echo "Execute failed: (" . $stmt_select_question->errno . ") " . $stmt_select_question->error;
+			return $stmt_select_question->get_result();
+		}
+	}
 ?>
