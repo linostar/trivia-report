@@ -234,6 +234,7 @@
 			$stmt_insert_question->close();
 			$stmt_update_question->close();
 			$stmt_delete_question->close();
+			$stmt_select_themes->close();
 			$conn->close();
 		}
 
@@ -244,6 +245,11 @@
 			if (!$stmt_select_question->execute())
 				echo "Execute failed: (" . $stmt_select_question->errno . ") " . $stmt_select_question->error;
 			return $stmt_select_question->get_result();
+		}
+
+		public function get_all_themes() {
+			$conn =& $this->conn;
+			return $conn->query("SELECT * FROM `themes`");
 		}
 	}
 ?>

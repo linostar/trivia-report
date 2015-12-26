@@ -30,6 +30,7 @@
 		global $trivia;
 		$question_dict = $trivia->get_question($question);
 		$question_dict = $question_dict->fetch_assoc();
+		$themes = $trivia->get_all_themes();
 		print_r($question_dict);
 	}
 
