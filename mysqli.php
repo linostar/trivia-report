@@ -234,7 +234,6 @@
 			$stmt_insert_question->close();
 			$stmt_update_question->close();
 			$stmt_delete_question->close();
-			$stmt_select_themes->close();
 			$conn->close();
 		}
 
@@ -247,9 +246,22 @@
 			return $stmt_select_question->get_result();
 		}
 
+		public function update_question($n_id, $n_question, $n_answer, $n_theme) {
+			$stmt_update_question =& $this->stmt_update_question;
+			$this->question_id = $n_id;
+			$this->question = $n_question;
+			$this->answer = $n_answer;
+			$this->theme = $n_theme;
+			if (!$stmt_update_question->execute()) {
+				echo "Execute failed: (" . $stmt_update_question->errno . ") " . $stmt_update_question->error;
+				return false;
+			}
+			return true;
+		}
+
 		public function get_all_themes() {
 			$conn =& $this->conn;
-			return $conn->query("SELECT * FROM `themes`");
+			return $conn->query("SELECT * FROM `trivia_themes`");
 		}
 	}
 ?>

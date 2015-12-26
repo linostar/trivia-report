@@ -26,12 +26,59 @@
 	$trivia->start();
 	$all_reasons = $db->get_all_reasons();
 
-	function display_question_panel($question) {
+	function display_question_panel($question, $rep_id) {
 		global $trivia;
 		$question_dict = $trivia->get_question($question);
 		$question_dict = $question_dict->fetch_assoc();
 		$themes = $trivia->get_all_themes();
-		print_r($question_dict);
+		if ($question_dict) {
+?>
+	<div class="container">
+		<div class="col-sm-8 col-sm-offset-2">
+			<form action="report.php?id=<?php echo $rep_id; ?>" id="form_save_all" method="post">
+				<input type="hidden" id="idQuestion" name="idQuestion" value="<?php echo $question_dict['id']; ?>">
+				<input type="hidden" id="idState" name="idState" value="">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<div class="panel-title">Related Question</div>
+					</div>
+					<div class="panel-body">
+						<div class="form-group">
+							<label for="txtQuestion" class="control-group">Question</label>
+							<input type="text" name="txtQuestion" id="txtQuestion" value="<?php echo $question_dict['question']; ?>" 
+							class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="txtAnswer" class="control-group">Answer</label>
+							<input type="text" name="txtAnswer" id="txtAnswer" value="<?php echo $question_dict['answer']; ?>" 
+							class="form-control">
+						</div>
+						<div class="form-group">
+							<label for="selTheme" class="control-group">Category</label>
+							<select id="selTheme" name="selTheme" class="form-control">
+<?php
+			while ($theme = $themes->fetch_array()) {
+				if ($theme[0] == $question_dict["theme_id"]) {
+					echo "<option value=\"$theme[0]\" selected>$theme[1]</option>";
+				}
+				else {
+					echo "<option value=\"$theme[0]\">$theme[1]</option>";
+				}
+			}
+?>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="sumbit" class="btn btn-info">Save Report &amp; Question</button>
+					<a href="index.php" class="btn btn-default">Back</a>
+				</div>
+			</form>
+		</div>
+	</div>
+<?php
+		}
 	}
 
 	function display_report_panel($rep_id) {
@@ -95,6 +142,7 @@
 			</form>
 		</div>
 	</div>
+	<br/>
 <?php
 		}
 		return $report["question"];
@@ -104,7 +152,7 @@
 		if (Utils::login($_POST["txtUser"], $_POST["txtPass"])) {
 			Utils::display_admin_navbar();
 			$question = display_report_panel($_GET["id"]);
-			display_question_panel($question);
+			display_question_panel($question, $_GET["id"]);
 		}
 		else {
 			echo '<center><div class="alert alert-danger panel_login">Wrong username or password!</div></center>';
@@ -115,6 +163,24 @@
 		Utils::logout();
 		echo '<center><div class="alert alert-info panel_login">You have been successfully logged out.</div></center>';
 		Utils::display_login();
+	}
+	else if ($_POST["idQuestion"] && $_POST["txtQuestion"] && $_POST["txtAnswer"] && $_POST["selTheme"] && $_POST["idState"] && $_GET["id"]) {
+		Utils::display_admin_navbar();
+		echo '<div class="container">';
+		if ($db->update_state($_GET["id"], $_POST["selState"])) {
+			if ($trivia->update_question($_POST["idQuestion"], $_POST["txtQuestion"], $_POST["txtAnswer"], $_POST["selTheme"])) {
+				echo '<div class="alert alert-success col-sm-8 col-sm-offset-2">Report and question were successfully saved.</div>';
+			}
+			else {
+				echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Error while trying to save question.</div>';
+			}
+		}
+		else {
+			echo '<div class="alert alert-danger col-sm-8 col-sm-offset-2">Error while trying to update report state. Please go easy on the developer.</div>';
+		}
+		echo '</div>';
+		$question = display_report_panel($_GET["id"]);
+		display_question_panel($question, $_GET["id"]);
 	}
 	else if ($_POST["selState"] && $_GET["id"]) {
 		Utils::display_admin_navbar();
@@ -127,12 +193,12 @@
 		}
 		echo '</div>';
 		$question = display_report_panel($_GET["id"]);
-		display_question_panel($question);
+		display_question_panel($question, $_GET["id"]);
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
 		Utils::display_admin_navbar();
 		$question = display_report_panel($_GET["id"]);
-		display_question_panel($question);
+		display_question_panel($question, $_GET["id"]);
 	}
 	else {
 		Utils::display_login();

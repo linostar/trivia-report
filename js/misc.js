@@ -22,4 +22,10 @@ $(document).ready(function() {
 			}
 		}
 	});
+
+	$("#idState").val($("#selState").val());
+
+	$("#selState").change(function() {
+		$("#idState").val($("#selState").val());
+	});
 });
