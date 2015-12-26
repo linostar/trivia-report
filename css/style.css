@@ -97,7 +97,7 @@ body {
 }
 
 .NEW {
-	background-color: #ee6666;
+	background-color: #ee7777;
 }
 
 .FIXED {
@@ -109,7 +109,7 @@ body {
 }
 
 .INVALID {
-	background-color: #8888dd;
+	background-color: #9999dd;
 }
 
 .WONTFIX {
