@@ -28,4 +28,8 @@ $(document).ready(function() {
 	$("#selState").change(function() {
 		$("#idState").val($("#selState").val());
 	});
+
+	$("#ckSelectAll").change(function() {
+		$(".individualCheckbox").prop("checked", $("#ckSelectAll").is(":checked"));
+	});
 });

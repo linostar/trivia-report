@@ -29,7 +29,37 @@
 	$trivia->start();
 
 	function display_theme_panel() {
-		echo "1";
+		global $trivia;
+		$themes = $trivia->get_all_themes();
+?>
+	<div class="container">
+		<div class="col-sm-6 col-sm-offset-3">
+			<form id="form_delete" action="theme.php" method="post">
+				<table class="table">
+					<thead>
+						<tr>
+							<th width="5%" class="middle"><input type="checkbox" id="ckSelectAll" name="ckSelectAll"></th>
+							<th width="10%" class="middle">ID</th>
+							<th>Theme</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php while ($theme = $themes->fetch_array()) { ?>
+						<tr>
+							<td class="middle">
+								<input type="checkbox" id="ckSelect_<?php echo $theme[0]; ?>" name="ckSelect_<?php echo $theme[0]; ?>" 
+								class="individualCheckbox">
+								</td>
+							<td class="middle"><?php echo $theme[0]; ?></td>
+							<td><a href="theme.php?action=edit&id=<?php echo $theme[0]; ?>"><?php echo $theme[1]; ?></a></td>
+						</tr>
+					<?php } ?>
+					</tbody>
+				</table>
+			</form>
+		</div>
+	</div>
+<?php
 	}
 
 	if ($_POST["txtUser"] && $_POST["txtPass"]) {
