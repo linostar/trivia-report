@@ -1,4 +1,11 @@
 <?php
+	require_once "../conf/config.php";
+
+	if (Config::$debug_admin) {
+		ini_set('display_errors', 'On');
+		error_reporting(E_ALL);
+	}
+
 	session_start();
 ?>
 <!DOCTYPE html>
@@ -19,7 +26,7 @@
 	require_once "../mysqli.php";
 
 	$state_types = array(0 => "NEW", 1 => "FIXED", 2 => "DUPLICATE", 3 => "INVALID", 4 => "WONTFIX");
-	$COUNT_PER_PAGE = 25;
+	$COUNT_PER_PAGE = Config::$items_per_page;
 	$count_rows = 0;
 	$current_page = 1;
 

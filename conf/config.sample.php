@@ -1,11 +1,20 @@
 <?php
 	class Config {
+		// Debug switch for the admin pages
+		public static $debug_admin = false;
+		
+		// Debug switch for the user pages
+		public static $debug_user = false;
+
 		// Credentials for the admin panel
 		public static $admin_user = "admin";
 		public static $admin_pass = "foo";
 
 		// Secret key for Captcha equation
 		public static $captcha_secret_key = "ChangeMe123!";
+
+		// Number of items to be displayed per page
+		public static $items_per_page = 25;
 
 		// Trivia's themes
 		public static $themes = array("default", "Anime", "Geography", "History", "LOTR-Books", 

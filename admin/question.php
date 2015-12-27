@@ -1,4 +1,11 @@
 <?php
+	require_once "../conf/config.php";
+
+	if (Config::$debug_admin) {
+		ini_set('display_errors', 'On');
+		error_reporting(E_ALL);
+	}
+
 	session_start();
 ?>
 <!DOCTYPE html>

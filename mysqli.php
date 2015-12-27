@@ -19,10 +19,11 @@
 		private $state;
 		private $theme;
 		private $page_num;
-		private $count_per_page = 25;
+		private $count_per_page;
 
 		public function start() {
 			$conn =& $this->conn;
+			$this->count_per_page = Config::$items_per_page;
 			$stmt_select_report_by_id =& $this->stmt_select_report_by_id;
 			$stmt_select_report_by_reason =& $this->stmt_select_report_by_reason;
 			$stmt_select_report_by_state =& $this->stmt_select_report_by_state;
@@ -199,9 +200,11 @@
 		private $answer;
 		private $theme;
 		private $question_id;
+		private $count_per_page;
 
 		public function start() {
 			$conn =& $this->conn;
+			$this->count_per_page = Config::$items_per_page;
 			$stmt_select_question =& $this->stmt_select_question;
 			$stmt_insert_question =& $this->stmt_insert_question;
 			$stmt_update_question =& $this->stmt_update_question;
