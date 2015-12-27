@@ -54,17 +54,17 @@
 					</div>
 					<div class="panel-body">
 						<div class="form-group">
-							<label for="txtQuestion" class="control-group">Question</label>
+							<label for="txtQuestion" class="control-label">Question</label>
 							<input type="text" name="txtQuestion" id="txtQuestion" value="<?php echo $question_dict['question']; ?>" 
 							class="form-control">
 						</div>
 						<div class="form-group">
-							<label for="txtAnswer" class="control-group">Answer</label>
+							<label for="txtAnswer" class="control-label">Answer</label>
 							<input type="text" name="txtAnswer" id="txtAnswer" value="<?php echo $question_dict['answer']; ?>" 
 							class="form-control">
 						</div>
 						<div class="form-group">
-							<label for="selTheme" class="control-group">Category</label>
+							<label for="selTheme" class="control-label">Category</label>
 							<select id="selTheme" name="selTheme" class="form-control">
 <?php
 			while ($theme = $themes->fetch_array()) {

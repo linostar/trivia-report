@@ -33,30 +33,70 @@
 		$themes = $trivia->get_all_themes();
 ?>
 	<div class="container">
-		<div class="col-sm-6 col-sm-offset-3">
-			<form id="form_delete" action="theme.php" method="post">
-				<table class="table">
-					<thead>
-						<tr>
-							<th width="5%" class="middle"><input type="checkbox" id="ckSelectAll" name="ckSelectAll"></th>
-							<th width="10%" class="middle">ID</th>
-							<th>Theme</th>
-						</tr>
-					</thead>
-					<tbody>
-					<?php while ($theme = $themes->fetch_array()) { ?>
-						<tr>
-							<td class="middle">
-								<input type="checkbox" id="ckSelect_<?php echo $theme[0]; ?>" name="ckSelect_<?php echo $theme[0]; ?>" 
-								class="individualCheckbox">
-								</td>
-							<td class="middle"><?php echo $theme[0]; ?></td>
-							<td><a href="theme.php?action=edit&id=<?php echo $theme[0]; ?>"><?php echo $theme[1]; ?></a></td>
-						</tr>
-					<?php } ?>
-					</tbody>
-				</table>
+		<div class="col-sm-6 col-sm-offset-3" id="leftPanel">
+			<form id="formDelete" name="formDelete" action="theme.php" method="post">
+				<input type="hidden" name="formAction" value="delete">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<div class="panel-title">Categories</div>
+					</div>
+					<div class="panel-body">
+						<center>
+						<div class="btn-group btn-group-sm">
+							<button type="submit" class="btn btn-danger">
+								<span class="glyphicon glyphicon-remove"></span> Delete selected
+							</button>
+							<button type="button" class="btn btn-success" id="btnAddTheme">
+								<span class="glyphicon glyphicon-plus"></span> Add Category
+							</button>
+						</div>
+						</center>	
+						<table class="table">
+							<thead>
+								<tr>
+									<th width="5%" class="middle"><input type="checkbox" id="ckSelectAll" name="ckSelectAll"></th>
+									<th width="10%" class="middle">ID</th>
+									<th>Theme</th>
+								</tr>
+							</thead>
+							<tbody>
+							<?php while ($theme = $themes->fetch_array()) { ?>
+								<tr>
+									<td class="middle">
+										<input type="checkbox" value="<?php echo $theme[0]; ?>" name="ckSelectItem[]" 
+										class="individualCheckbox">
+										</td>
+									<td class="middle"><?php echo $theme[0]; ?></td>
+									<td><a href="theme.php?action=edit&id=<?php echo $theme[0]; ?>"><?php echo $theme[1]; ?></a></td>
+								</tr>
+							<?php } ?>
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</form>
+		</div>
+		<div class="col-sm-6" id="rightPanel" hidden="true">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<div class="panel-title" style="display: flex; justify-content: space-between;">
+						<span>New Category</span>
+						<span id="btnClose"><a class="pointer"><span class="glyphicon glyphicon-remove"></span></a></span>
+					</div>
+				</div>
+				<div class="panel-body">
+					<form id="formAdd" action="theme.php" method="post">
+						<input type="hidden" name="formAction" value="add">
+						<div class="form-group">
+							<label for="txtTheme" class="control-label">Category Name</label>
+							<input type="text" name="txtTheme" id="txtTheme" class="form-control" value="">
+						</div>
+						<div class="form-group">
+							<button type="submit" class="btn btn-info">Save</button>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 <?php
@@ -76,6 +116,25 @@
 		Utils::logout();
 		echo '<center><div class="alert alert-info panel_login">You have been successfully logged out.</div></center>';
 		Utils::display_login();
+	}
+	else if ($_POST["formAction"] == "delete") {
+		$count = 0;
+		$delete_status = true;
+		Utils::display_admin_navbar();
+		foreach ($_POST["ckSelectItem"] as $item) {
+			$delete_status = $delete_status && $trivia->delete_theme($item);
+			$count += 1;
+		}
+		if ($delete_status) {
+			echo '<div class="container"><div class="alert alert-success col-sm-6">'. $count . ' Theme(s) successfully deleted.</div></div>';
+		}
+		else {
+			echo '<div class="container"><div class="alert alert-danger col-sm-6">Error when trying to delete theme(s).</div></div>';
+		}
+		display_theme_panel();
+	}
+	else if ($_POST["formAction"] == "add" && $_POST["txtTheme"]) {
+		echo "1";
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
 		Utils::display_admin_navbar();

@@ -196,6 +196,7 @@
 		private $stmt_insert_question;
 		private $stmt_update_question;
 		private $stmt_delete_question;
+		private $stmt_delete_theme;
 		private $question;
 		private $answer;
 		private $theme;
@@ -209,6 +210,7 @@
 			$stmt_insert_question =& $this->stmt_insert_question;
 			$stmt_update_question =& $this->stmt_update_question;
 			$stmt_delete_question =& $this->stmt_delete_question;
+			$stmt_delete_theme =& $this->stmt_delete_theme;
 
 			$conn = new mysqli(Config::$conn_trivia_host, Config::$conn_trivia_user, Config::$conn_trivia_pass, Config::$conn_trivia_db);
 			if ($conn->connect_error) {
@@ -220,11 +222,13 @@
 				"VALUES (?, ?, ?)");
 			$stmt_update_question = $conn->prepare("UPDATE `trivia_questions` SET `question`=?, `answer`=?, `theme_id`=? WHERE `id`=?");
 			$stmt_delete_question = $conn->prepare("DELETE FROM `trivia_questions` WHERE `id`=?");
+			$stmt_delete_theme = $conn->prepare("DELETE FROM `trivia_themes` WHERE `theme_id`=?");
 
 			$stmt_select_question->bind_param("s", $this->question);
 			$stmt_insert_question->bind_param("ssi", $this->question, $this->answer, $this->theme);
 			$stmt_update_question->bind_param("ssii", $this->question, $this->answer, $this->theme, $this->question_id);
 			$stmt_delete_question->bind_param("i", $this->question_id);
+			$stmt_delete_theme->bind_param("i", $this->theme_id);
 		}
 
 		public function stop() {
@@ -233,10 +237,12 @@
 			$stmt_insert_question =& $this->stmt_insert_question;
 			$stmt_update_question =& $this->stmt_update_question;
 			$stmt_delete_question =& $this->stmt_delete_question;
+			$stmt_delete_theme =& $this->stmt_delete_theme;
 			$stmt_select_question->close();
 			$stmt_insert_question->close();
 			$stmt_update_question->close();
 			$stmt_delete_question->close();
+			$stmt_delete_theme->close();
 			$conn->close();
 		}
 
@@ -265,6 +271,16 @@
 		public function get_all_themes() {
 			$conn =& $this->conn;
 			return $conn->query("SELECT * FROM `trivia_themes`");
+		}
+
+		public function delete_theme($n_theme) {
+			$stmt_delete_theme =& $this->stmt_delete_theme;
+			$this->theme_id = $n_theme;
+			if (!$stmt_delete_theme->execute()) {
+				echo "Execute failed: (" . $stmt_delete_theme->errno . ") " . $stmt_delete_theme->error;
+				return false;
+			}
+			return true;
 		}
 	}
 ?>

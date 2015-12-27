@@ -32,4 +32,14 @@ $(document).ready(function() {
 	$("#ckSelectAll").change(function() {
 		$(".individualCheckbox").prop("checked", $("#ckSelectAll").is(":checked"));
 	});
+
+	$("#btnAddTheme").click(function() {
+		$("#leftPanel").removeClass("col-sm-offset-3");
+		$("#rightPanel").show(500);
+	});
+
+	$("#btnClose").click(function() {
+		$("#rightPanel").hide();
+		$("#leftPanel").addClass("col-sm-offset-3");
+	});
 });
