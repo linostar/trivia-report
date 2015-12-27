@@ -21,9 +21,14 @@
 	$trivia = new Trivia_DB;
 	$trivia->start();
 
+	function display_theme_panel() {
+		echo "1";
+	}
+
 	if ($_POST["txtUser"] && $_POST["txtPass"]) {
 		if (Utils::login($_POST["txtUser"], $_POST["txtPass"])) {
 			Utils::display_admin_navbar();
+			display_theme_panel();
 		}
 		else {
 			echo '<center><div class="alert alert-danger panel_login">Wrong username or password!</div></center>';
@@ -37,6 +42,7 @@
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
 		Utils::display_admin_navbar();
+		display_theme_panel();
 	}
 	else {
 		Utils::display_login();

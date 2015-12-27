@@ -28,6 +28,9 @@
 
 	function display_question_panel($question, $rep_id) {
 		global $trivia;
+		if (!$question) {
+			return false;
+		}
 		$question_dict = $trivia->get_question($question);
 		$question_dict = $question_dict->fetch_assoc();
 		$themes = $trivia->get_all_themes();
@@ -144,8 +147,13 @@
 	</div>
 	<br/>
 <?php
+			return $report["question"];
 		}
-		return $report["question"];
+		else {
+			echo '<div class="container"><div class="col-sm-8 col-sm-offset-2"><div class="alert alert-warning">Report not found.</div>';
+			echo '<a href="javascript:history.go(-1)" class="btn btn-default">Go back</a></div></div>';
+			return false;
+		}
 	}
 
 	if ($_POST["txtUser"] && $_POST["txtPass"]) {
