@@ -126,15 +126,27 @@
 			$count += 1;
 		}
 		if ($delete_status) {
-			echo '<div class="container"><div class="alert alert-success col-sm-6">'. $count . ' Theme(s) successfully deleted.</div></div>';
+			if ($count == 1)
+				echo '<div class="container"><div class="alert alert-success col-sm-6 col-sm-offset-3">'. 
+				'1 Category successfully deleted.</div></div>';
+			else
+				echo '<div class="container"><div class="alert alert-success col-sm-6 col-sm-offset-3">'. 
+				$count . ' Categories successfully deleted.</div></div>';
 		}
 		else {
-			echo '<div class="container"><div class="alert alert-danger col-sm-6">Error when trying to delete theme(s).</div></div>';
+			echo '<div class="container"><div class="alert alert-danger col-sm-6 col-sm-offset-3">Error when trying to delete categories.</div></div>';
 		}
 		display_theme_panel();
 	}
 	else if ($_POST["formAction"] == "add" && $_POST["txtTheme"]) {
-		echo "1";
+		Utils::display_admin_navbar();
+		if ($trivia->add_theme($_POST["txtTheme"])) {
+			echo '<div class="container"><div class="alert alert-success col-sm-6 col-sm-offset-3">Category successfully added.</div></div>';
+		}
+		else {
+			echo '<div class="container"><div class="alert alert-danger col-sm-6 col-sm-offset-3">Error when trying to add the category.</div></div>';
+		}
+		display_theme_panel();
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
 		Utils::display_admin_navbar();
