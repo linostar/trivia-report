@@ -35,7 +35,7 @@
 	<div class="container">
 		<div class="col-sm-6 col-sm-offset-3" id="leftPanel">
 			<form id="formDelete" name="formDelete" action="theme.php" method="post">
-				<input type="hidden" name="formAction" value="delete">
+				<input type="hidden" name="actionDelete"  id="actionDelete" value="delete">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<div class="panel-title">Categories</div>
@@ -67,7 +67,9 @@
 										class="individualCheckbox">
 										</td>
 									<td class="middle"><?php echo $theme[0]; ?></td>
-									<td><a href="theme.php?action=edit&id=<?php echo $theme[0]; ?>"><?php echo $theme[1]; ?></a></td>
+									<td><a class="triggerEdit" href="#" tag_id="<?php echo $theme[0]; ?>" tag_name="<?php echo $theme[1]; ?>">
+										<?php echo $theme[1]; ?>
+									</a></td>
 								</tr>
 							<?php } ?>
 							</tbody>
@@ -80,13 +82,14 @@
 			<div class="panel panel-info">
 				<div class="panel-heading">
 					<div class="panel-title" style="display: flex; justify-content: space-between;">
-						<span>New Category</span>
+						<span id="rightTitle">New Category</span>
 						<span id="btnClose"><a class="pointer"><span class="glyphicon glyphicon-remove"></span></a></span>
 					</div>
 				</div>
 				<div class="panel-body">
-					<form id="formAdd" action="theme.php" method="post">
-						<input type="hidden" name="formAction" value="add">
+					<form id="formChange" name="formChange" action="theme.php" method="post">
+						<input type="hidden" name="actionChange" id="actionChange" value="add">
+						<input type="hidden" name="txtThemeID" id="txtThemeID" value="">
 						<div class="form-group">
 							<label for="txtTheme" class="control-label">Category Name</label>
 							<input type="text" name="txtTheme" id="txtTheme" class="form-control" value="">
@@ -117,7 +120,7 @@
 		echo '<center><div class="alert alert-info panel_login">You have been successfully logged out.</div></center>';
 		Utils::display_login();
 	}
-	else if ($_POST["formAction"] == "delete") {
+	else if ($_POST["actionDelete"] == "delete") {
 		$count = 0;
 		$delete_status = true;
 		Utils::display_admin_navbar();
@@ -138,13 +141,23 @@
 		}
 		display_theme_panel();
 	}
-	else if ($_POST["formAction"] == "add" && $_POST["txtTheme"]) {
+	else if ($_POST["actionChange"] == "add" && $_POST["txtTheme"]) {
 		Utils::display_admin_navbar();
 		if ($trivia->add_theme($_POST["txtTheme"])) {
 			echo '<div class="container"><div class="alert alert-success col-sm-6 col-sm-offset-3">Category successfully added.</div></div>';
 		}
 		else {
 			echo '<div class="container"><div class="alert alert-danger col-sm-6 col-sm-offset-3">Error when trying to add the category.</div></div>';
+		}
+		display_theme_panel();
+	}
+	else if ($_POST["actionChange"] == "edit" && $_POST["txtTheme"] && $_POST["txtThemeID"]) {
+		Utils::display_admin_navbar();
+		if ($trivia->edit_theme($_POST["txtThemeID"], $_POST["txtTheme"])) {
+			echo '<div class="container"><div class="alert alert-success col-sm-6 col-sm-offset-3">Category successfully updated.</div></div>';
+		}
+		else {
+			echo '<div class="container"><div class="alert alert-danger col-sm-6 col-sm-offset-3">Error when trying to update the category.</div></div>';
 		}
 		display_theme_panel();
 	}

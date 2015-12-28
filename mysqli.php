@@ -283,7 +283,7 @@
 
 		public function get_all_themes() {
 			$conn =& $this->conn;
-			return $conn->query("SELECT * FROM `trivia_themes`");
+			return $conn->query("SELECT * FROM `trivia_themes` ORDER BY `theme_id` ASC");
 		}
 
 		public function delete_theme($n_theme) {
@@ -301,6 +301,17 @@
 			$this->theme_name = $n_theme_name;
 			if (!$stmt_insert_theme->execute()) {
 				echo "Execute failed: (" . $stmt_insert_theme->errno . ") " . $stmt_insert_theme->error;
+				return false;
+			}
+			return true;
+		}
+
+		public function edit_theme($n_theme, $n_theme_name) {
+			$stmt_update_theme =& $this->stmt_update_theme;
+			$this->theme_name = $n_theme_name;
+			$this->theme = $n_theme;
+			if (!$stmt_update_theme->execute()) {
+				echo "Execute failed: (" . $stmt_update_theme->errno . ") " . $stmt_update_theme->error;
 				return false;
 			}
 			return true;

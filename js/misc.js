@@ -34,6 +34,9 @@ $(document).ready(function() {
 	});
 
 	$("#btnAddTheme").click(function() {
+		$("#actionChange").val("add");
+		$("#rightTitle").text("Add Category");
+		$("#txtTheme").val("");
 		$("#leftPanel").removeClass("col-sm-offset-3");
 		$("#rightPanel").show(500);
 	});
@@ -41,5 +44,14 @@ $(document).ready(function() {
 	$("#btnClose").click(function() {
 		$("#rightPanel").hide();
 		$("#leftPanel").addClass("col-sm-offset-3");
+	});
+
+	$(".triggerEdit").click(function() {
+		$("#actionChange").val("edit");
+		$("#rightTitle").text("Edit Category");
+		$("#txtTheme").val($(this).attr("tag_name"));
+		$("#txtThemeID").val($(this).attr("tag_id"));
+		$("#leftPanel").removeClass("col-sm-offset-3");
+		$("#rightPanel").show(500);
 	});
 });
