@@ -56,15 +56,15 @@
 						<div class="input-group">
 							<?php if ($_GET["search"]) { ?>
 							<input type="text" name="search" id="search" value="<?php echo $_GET['search']; ?>" class="form-control pale"
-							placeholder="Search questions" aria-describedby="basic-addon2" form="formSearch">
+							placeholder="Search questions" aria-describedby="basic-addon" form="formSearch">
 							<?php } else { ?>
 							<input type="text" name="search" id="search" value="" class="form-control"
-							placeholder="Search questions" aria-describedby="basic-addon2" form="formSearch">
+							placeholder="Search questions" aria-describedby="basic-addon" form="formSearch">
 							<?php } ?>
 							<?php
 								if ($_GET["search"]) {
-									echo '<span class="input-group-addon pointer" id="basic-addon2"><span class="glyphicon glyphicon-remove" ' .
-									'id="clearSearch"></span></span>';
+									echo '<span class="input-group-addon pointer" id="clearSearch"><span class="glyphicon glyphicon-remove">' .
+									'</span></span>';
 								}
 							?>
 							<span class="input-group-addon pointer" id="basic-addon">

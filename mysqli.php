@@ -169,7 +169,8 @@
 		public function filter_report_state($n_state, $n_page = 1) {
 			$conn =& $this->conn;
 			$this_page_num = ($n_page - 1) * $this->count_per_page;
-			$count = $conn->query("SELECT COUNT(*) FROM reports WHERE state=$n_state");
+			$state = mysql_real_escape_string($n_state);
+			$count = $conn->query("SELECT COUNT(*) FROM reports WHERE state=$state");
 			$stmt_select_report_by_state =& $this->stmt_select_report_by_state;
 			$this->state = $n_state;
 			if (!$stmt_select_report_by_state->execute())
@@ -180,7 +181,8 @@
 		public function filter_report_reason($n_reason, $n_page = 1) {
 			$conn =& $this->conn;
 			$this_page_num = ($n_page - 1) * $this->count_per_page;
-			$count = $conn->query("SELECT COUNT(*) FROM reports WHERE reason_id=$n_reason");
+			$reason = mysql_real_escape_string($n_reason);
+			$count = $conn->query("SELECT COUNT(*) FROM reports WHERE reason_id=$reason");
 			$stmt_select_report_by_reason =& $this->stmt_select_report_by_reason;
 			$this->page_num = ($n_page - 1) * $this->count_per_page;
 			$this->reason_id = $n_reason;
@@ -284,7 +286,7 @@
 			$per_page = $this->count_per_page;
 			$this->page_num = ($n_page - 1) * $per_page;
 			$this->question = trim($n_question);
-			$this->question = "%" . $this->question . "%";
+			$this->question = "%" . mysql_real_escape_string($this->question) . "%";
 			$question = $this->question;
 			$count = $conn->query("SELECT COUNT(*) FROM `trivia_questions` WHERE `question` LIKE '$question'");
 			if (!$stmt_search_question->execute())
