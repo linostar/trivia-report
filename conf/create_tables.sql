@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `reasons` (
 	`reason_id` SMALLINT NOT NULL AUTO_INCREMENT,
 	`reason_name` VARCHAR(32) NOT NULL,
 	PRIMARY KEY (`reason_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT IGNORE INTO `reasons` VALUES 
 	(1, 'Incorrect answer'),
@@ -24,4 +24,4 @@ CREATE TABLE IF NOT EXISTS `reports` (
 	 PRIMARY KEY (`report_id`),
 	 INDEX (`reason_id`),
 	 FOREIGN KEY (`reason_id`) REFERENCES `reasons` (`reason_id`) ON DELETE SET DEFAULT
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
