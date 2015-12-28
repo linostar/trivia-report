@@ -196,6 +196,7 @@
 		private $stmt_insert_question;
 		private $stmt_update_question;
 		private $stmt_delete_question;
+		private $stmt_search_question;
 		private $stmt_insert_theme;
 		private $stmt_update_theme;
 		private $stmt_delete_theme;
@@ -213,6 +214,7 @@
 			$stmt_insert_question =& $this->stmt_insert_question;
 			$stmt_update_question =& $this->stmt_update_question;
 			$stmt_delete_question =& $this->stmt_delete_question;
+			$stmt_search_question =& $this->stmt_search_question;
 			$stmt_insert_theme =& $this->stmt_insert_theme;
 			$stmt_update_theme =& $this->stmt_update_theme;
 			$stmt_delete_theme =& $this->stmt_delete_theme;
@@ -222,11 +224,13 @@
 				die("Connection failed: " . $conn->connect_error);
 			}
 
-			$stmt_select_question = $conn->prepare("SELECT * FROM `trivia_questions` WHERE `question` like ?");
+			$stmt_select_question = $conn->prepare("SELECT * FROM `trivia_questions` WHERE `question` LIKE ?");
 			$stmt_insert_question = $conn->prepare("INSERT INTO `trivia_questions` (`question`, `answer`, `theme_id`) " .
 				"VALUES (?, ?, ?)");
 			$stmt_update_question = $conn->prepare("UPDATE `trivia_questions` SET `question`=?, `answer`=?, `theme_id`=? WHERE `id`=?");
 			$stmt_delete_question = $conn->prepare("DELETE FROM `trivia_questions` WHERE `id`=?");
+			$stmt_search_question = $conn->prepare("SELECT q.id, q.question, q.answer, t.theme_name, t.theme_id FROM trivia_questions AS q " .
+				"JOIN trivia_themes AS t ON q.theme_id=t.theme_id AND q.question LIKE ? ORDER BY q.id DESC LIMIT ?, ?");
 			$stmt_insert_theme = $conn->prepare("INSERT INTO `trivia_themes` (`theme_name`) VALUES (?)");
 			$stmt_update_theme = $conn->prepare("UPDATE `trivia_themes` SET `theme_name`=? WHERE `theme_id`=?");
 			$stmt_delete_theme = $conn->prepare("DELETE FROM `trivia_themes` WHERE `theme_id`=?");
@@ -235,6 +239,7 @@
 			$stmt_insert_question->bind_param("ssi", $this->question, $this->answer, $this->theme);
 			$stmt_update_question->bind_param("ssii", $this->question, $this->answer, $this->theme, $this->question_id);
 			$stmt_delete_question->bind_param("i", $this->question_id);
+			$stmt_search_question->bind_param("sii", $this->question, $this->page_num, $this->count_per_page);
 			$stmt_insert_theme->bind_param("s", $this->theme_name);
 			$stmt_update_theme->bind_param("si", $this->theme_name, $this->theme);
 			$stmt_delete_theme->bind_param("i", $this->theme);
@@ -246,6 +251,7 @@
 			$stmt_insert_question =& $this->stmt_insert_question;
 			$stmt_update_question =& $this->stmt_update_question;
 			$stmt_delete_question =& $this->stmt_delete_question;
+			$stmt_search_question =& $this->stmt_search_question;
 			$stmt_insert_theme =& $this->stmt_insert_theme;
 			$stmt_update_theme =& $this->stmt_update_theme;
 			$stmt_delete_theme =& $this->stmt_delete_theme;
@@ -253,6 +259,7 @@
 			$stmt_insert_question->close();
 			$stmt_update_question->close();
 			$stmt_delete_question->close();
+			$stmt_search_question->close();
 			$stmt_insert_theme->close();
 			$stmt_update_theme->close();
 			$stmt_delete_theme->close();
@@ -266,6 +273,24 @@
 			if (!$stmt_select_question->execute())
 				echo "Execute failed: (" . $stmt_select_question->errno . ") " . $stmt_select_question->error;
 			return $stmt_select_question->get_result();
+		}
+
+		public function search_question($n_question, $n_page) {
+			if (!$n_page) {
+				$n_page = 1;
+			}
+			$conn =& $this->conn;
+			$stmt_search_question =& $this->stmt_search_question;
+			$per_page = $this->count_per_page;
+			$this->page_num = ($n_page - 1) * $per_page;
+			$this->question = trim($n_question);
+			$this->question = "%" . $this->question . "%";
+			$question = $this->question;
+			$count = $conn->query("SELECT COUNT(*) FROM `trivia_questions` WHERE `question` LIKE '$question'");
+			if (!$stmt_search_question->execute())
+				echo "Execute failed: (" . $stmt_search_question->errno . ") " . $stmt_search_question->error;
+			$result = $stmt_search_question->get_result();
+			return array($result, $count->fetch_array()[0]);
 		}
 
 		public function update_question($n_id, $n_question, $n_answer, $n_theme) {

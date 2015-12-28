@@ -29,12 +29,17 @@
 	$trivia->start();
 	$current_page = 1;
 
-	function display_question_panel($page = 1) {
+	function display_question_panel($page = 1, $search = false) {
 		global $trivia;
 		global $current_page;
 
 		$themes = $trivia->get_themes_array();
-		list($questions, $count_rows) = $trivia->get_questions($page);
+		if ($search) {
+			list($questions, $count_rows) = $trivia->search_question($search, $page);
+		}
+		else {
+			list($questions, $count_rows) = $trivia->get_questions($page);
+		}
 ?>
 	<div class="container">
 		<div class="col-sm-6 col-sm-offset-3" id="leftPanel">
@@ -49,7 +54,7 @@
 					</div>
 					<div class="panel-body">
 						<div class="input-group">
-							<input type="text" name="search" id="search" value="" class="form-control"
+							<input type="text" name="search" id="search" value="<?php echo $_GET['search']; ?>" class="form-control"
 							placeholder="Search questions" aria-describedby="basic-addon" form="formSearch">
 							<span class="input-group-addon pointer" id="basic-addon"><span class="glyphicon glyphicon-search"></span></span>
 						</div>
@@ -74,8 +79,8 @@
 							</thead>
 							<tbody>
 							<?php 
-								if (!$questions) {
-									echo '<tr><td colspan="3" class="middle empty">Empty</td></tr>';
+								if (!$questions->num_rows) {
+									echo '<tr><td colspan="3" class="middle empty">No results</td></tr>';
 								}
 								else {
 									while ($question = $questions->fetch_array()) { 
@@ -254,6 +259,10 @@
 			echo '<div class="container"><div class="alert alert-danger col-sm-6 col-sm-offset-3">Error when trying to update the question.</div></div>';
 		}
 		display_question_panel($_GET["page"]);
+	}
+	else if ($_GET["search"]) {
+		Utils::display_admin_navbar();
+		display_question_panel($_GET["page"], $_GET["search"]);
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
 		Utils::display_admin_navbar();

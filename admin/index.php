@@ -74,7 +74,7 @@
 			"<td class=\"middle $state_types[$st]\">$state_types[$st]</td></tr>";
 		}
 		if (!$reports->num_rows) {
-			echo "<tr><td colspan=\"5\" class=\"middle empty\"><b>Empty</b></tr>";
+			echo "<tr><td colspan=\"5\" class=\"middle empty\">No results</tr>";
 		}
 	}
 
