@@ -59,6 +59,7 @@ body {
 	height: 2em;
 	background-color: #d4d4d4;
 	padding-top: 0.4em;
+	z-index: 100;
 }
 
 .footer_admin {
@@ -131,4 +132,8 @@ body {
 
 .pointer {
 	cursor: pointer;
+}
+
+.pale {
+	background-color: #ffffaa;
 }

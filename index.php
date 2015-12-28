@@ -42,7 +42,7 @@
 		require_once "mysqli.php";
 		require_once "captcha.php";
 
-		$db = new Connection;
+		$db = new Reporter_DB;
 		$db->start();
 
 		$trivia = new Trivia_DB;

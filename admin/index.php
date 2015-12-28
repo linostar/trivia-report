@@ -30,7 +30,7 @@
 	$count_rows = 0;
 	$current_page = 1;
 
-	$db = new Connection;
+	$db = new Reporter_DB;
 	$db->start();
 	$trivia = new Trivia_DB;
 	$trivia->start();

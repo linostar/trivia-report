@@ -27,7 +27,7 @@
 
 	$state_types = array(0 => "NEW", 1 => "FIXED", 2 => "DUPLICATE", 3 => "INVALID", 4 => "WONTFIX");
 
-	$db = new Connection;
+	$db = new Reporter_DB;
 	$db->start();
 	$trivia = new Trivia_DB;
 	$trivia->start();
@@ -42,7 +42,7 @@
 		if (!$question) {
 			return false;
 		}
-		
+
 		$question_dict = $trivia->get_question($question);
 		$question_dict = $question_dict->fetch_assoc();
 		if ($question_dict) {
@@ -171,7 +171,7 @@
 
 	if ($_POST["txtUser"] && $_POST["txtPass"]) {
 		if (Utils::login($_POST["txtUser"], $_POST["txtPass"])) {
-			Utils::display_admin_navbar();
+			Utils::display_admin_navbar("Report Manager");
 			$question = display_report_panel($_GET["id"]);
 			display_question_panel($question, $_GET["id"]);
 		}
@@ -186,7 +186,7 @@
 		Utils::display_login();
 	}
 	else if ($_POST["idQuestion"] && $_POST["txtQuestion"] && $_POST["txtAnswer"] && $_POST["selTheme"] && $_POST["idState"] && $_GET["id"]) {
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Report Manager");
 		echo '<div class="container">';
 		if ($db->update_state($_GET["id"], $_POST["selState"])) {
 			if ($trivia->update_question($_POST["idQuestion"], $_POST["txtQuestion"], $_POST["txtAnswer"], $_POST["selTheme"])) {
@@ -204,7 +204,7 @@
 		display_question_panel($question, $_GET["id"]);
 	}
 	else if ($_POST["selState"] && $_GET["id"]) {
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Report Manager");
 		echo '<div class="container">';
 		if ($db->update_state($_GET["id"], $_POST["selState"])) {
 			echo '<div class="alert alert-success col-sm-8 col-sm-offset-2">Report state successfully updated.</div>';
@@ -217,7 +217,7 @@
 		display_question_panel($question, $_GET["id"]);
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Report Manager");
 		$question = display_report_panel($_GET["id"]);
 		display_question_panel($question, $_GET["id"]);
 	}

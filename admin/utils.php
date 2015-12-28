@@ -44,7 +44,7 @@
 <?php
 		}
 
-		public static function display_admin_navbar() {
+		public static function display_admin_navbar($title = "Admin Panel") {
 ?>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
@@ -55,7 +55,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" style="background-color: black;">Admin Panel</a>
+				<a class="navbar-brand" style="background-color: black;"><?php echo $title; ?></a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">

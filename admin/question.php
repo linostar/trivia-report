@@ -54,9 +54,21 @@
 					</div>
 					<div class="panel-body">
 						<div class="input-group">
-							<input type="text" name="search" id="search" value="<?php echo $_GET['search']; ?>" class="form-control"
-							placeholder="Search questions" aria-describedby="basic-addon" form="formSearch">
-							<span class="input-group-addon pointer" id="basic-addon"><span class="glyphicon glyphicon-search"></span></span>
+							<?php if ($_GET["search"]) { ?>
+							<input type="text" name="search" id="search" value="<?php echo $_GET['search']; ?>" class="form-control pale"
+							placeholder="Search questions" aria-describedby="basic-addon2" form="formSearch">
+							<?php } else { ?>
+							<input type="text" name="search" id="search" value="" class="form-control"
+							placeholder="Search questions" aria-describedby="basic-addon2" form="formSearch">
+							<?php } ?>
+							<?php
+								if ($_GET["search"]) {
+									echo '<span class="input-group-addon pointer" id="basic-addon2"><span class="glyphicon glyphicon-remove" ' .
+									'id="clearSearch"></span></span>';
+								}
+							?>
+							<span class="input-group-addon pointer" id="basic-addon">
+							<span class="glyphicon glyphicon-search"></span></span>
 						</div>
 						<br/>
 						<center>
@@ -206,7 +218,7 @@
 
 	if ($_POST["txtUser"] && $_POST["txtPass"]) {
 		if (Utils::login($_POST["txtUser"], $_POST["txtPass"])) {
-			Utils::display_admin_navbar();
+			Utils::display_admin_navbar("Question Manager");
 			display_question_panel($_GET["page"]);
 		}
 		else {
@@ -222,7 +234,7 @@
 	else if ($_POST["actionQuestionDelete"] == "delete") {
 		$count = 0;
 		$delete_status = true;
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Question Manager");
 		foreach ($_POST["ckSelectItem"] as $item) {
 			$delete_status = $delete_status && $trivia->delete_question($item);
 			$count += 1;
@@ -241,7 +253,7 @@
 		display_question_panel($_GET["page"]);
 	}
 	else if ($_POST["actionQuestionChange"] == "add" && $_POST["txtQuestion"] && $_POST["txtAnswer"] && $_POST["selTheme"]) {
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Question Manager");
 		if ($trivia->add_question($_POST["txtQuestion"], $_POST["txtAnswer"], $_POST["selTheme"])) {
 			echo '<div class="container"><div class="alert alert-success col-sm-6 col-sm-offset-3">Question successfully added.</div></div>';
 		}
@@ -251,7 +263,7 @@
 		display_question_panel($_GET["page"]);
 	}
 	else if ($_POST["actionQuestionChange"] == "edit" && $_POST["txtQuestion"] && $_POST["txtQuestionID"]) {
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Question Manager");
 		if ($trivia->update_question($_POST["txtQuestionID"], $_POST["txtQuestion"], $_POST["txtAnswer"], $_POST["selTheme"])) {
 			echo '<div class="container"><div class="alert alert-success col-sm-6 col-sm-offset-3">Question successfully updated.</div></div>';
 		}
@@ -261,11 +273,11 @@
 		display_question_panel($_GET["page"]);
 	}
 	else if ($_GET["search"]) {
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Question Manager");
 		display_question_panel($_GET["page"], $_GET["search"]);
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Question Manager");
 		display_question_panel($_GET["page"]);
 	}
 	else {

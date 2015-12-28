@@ -79,4 +79,10 @@ $(document).ready(function() {
 	$("#basic-addon").click(function() {
 		$("#formSearch").submit();
 	});
+
+	$("#clearSearch").click(function() {
+		$("#search").val("");
+		$("#search").removeClass("pale");
+		$("#formSearch").submit();
+	});
 });

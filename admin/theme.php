@@ -107,7 +107,7 @@
 
 	if ($_POST["txtUser"] && $_POST["txtPass"]) {
 		if (Utils::login($_POST["txtUser"], $_POST["txtPass"])) {
-			Utils::display_admin_navbar();
+			Utils::display_admin_navbar("Category Manager");
 			display_theme_panel();
 		}
 		else {
@@ -123,7 +123,7 @@
 	else if ($_POST["actionDelete"] == "delete") {
 		$count = 0;
 		$delete_status = true;
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Category Manager");
 		foreach ($_POST["ckSelectItem"] as $item) {
 			$delete_status = $delete_status && $trivia->delete_theme($item);
 			$count += 1;
@@ -142,7 +142,7 @@
 		display_theme_panel();
 	}
 	else if ($_POST["actionChange"] == "add" && $_POST["txtTheme"]) {
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Category Manager");
 		if ($trivia->add_theme($_POST["txtTheme"])) {
 			echo '<div class="container"><div class="alert alert-success col-sm-6 col-sm-offset-3">Category successfully added.</div></div>';
 		}
@@ -152,7 +152,7 @@
 		display_theme_panel();
 	}
 	else if ($_POST["actionChange"] == "edit" && $_POST["txtTheme"] && $_POST["txtThemeID"]) {
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Category Manager");
 		if ($trivia->edit_theme($_POST["txtThemeID"], $_POST["txtTheme"])) {
 			echo '<div class="container"><div class="alert alert-success col-sm-6 col-sm-offset-3">Category successfully updated.</div></div>';
 		}
@@ -162,7 +162,7 @@
 		display_theme_panel();
 	}
 	else if ($_SESSION["username"] && $_SESSION["password"]) {
-		Utils::display_admin_navbar();
+		Utils::display_admin_navbar("Category Manager");
 		display_theme_panel();
 	}
 	else {

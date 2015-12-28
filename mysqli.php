@@ -1,7 +1,7 @@
 <?php
 	require_once "conf/config.php";
 
-	class Connection {
+	class Reporter_DB {
 		private $conn;
 		private $stmt_select_report_by_id;
 		private $stmt_select_report_by_reason;
