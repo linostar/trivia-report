@@ -41,6 +41,14 @@ $(document).ready(function() {
 		$("#rightPanel").show(500);
 	});
 
+	$("#btnAddQuestion").click(function() {
+		$("#actionQuestionChange").val("add");
+		$("#rightTitle").text("Add Question");
+		$("#txtQuestion").val("");
+		$("#leftPanel").removeClass("col-sm-offset-3");
+		$("#rightPanel").show(500);
+	});
+
 	$("#btnClose").click(function() {
 		$("#rightPanel").hide();
 		$("#leftPanel").addClass("col-sm-offset-3");
@@ -51,6 +59,17 @@ $(document).ready(function() {
 		$("#rightTitle").text("Edit Category");
 		$("#txtTheme").val($(this).attr("tag_name"));
 		$("#txtThemeID").val($(this).attr("tag_id"));
+		$("#leftPanel").removeClass("col-sm-offset-3");
+		$("#rightPanel").show(500);
+	});
+
+	$(".triggerQuestionEdit").click(function() {
+		$("#actionQuestionChange").val("edit");
+		$("#rightTitle").text("Edit Question");
+		$("#txtQuestion").val($(this).attr("tag_question"));
+		$("#txtAnswer").val($(this).attr("tag_answer"));
+		$("#selTheme").val($(this).attr("tag_theme"));
+		$("#txtQuestionID").val($(this).attr("tag_id"));
 		$("#leftPanel").removeClass("col-sm-offset-3");
 		$("#rightPanel").show(500);
 	});

@@ -307,7 +307,7 @@
 			$conn =& $this->conn;
 			$per_page = $this->count_per_page;
 			$start = ($n_page - 1) * $per_page;
-			$result = $conn->query("SELECT q.question, q.answer, t.theme_name FROM trivia_questions AS q " .
+			$result = $conn->query("SELECT q.id, q.question, q.answer, t.theme_name, t.theme_id FROM trivia_questions AS q " .
 				"JOIN trivia_themes AS t ON q.theme_id=t.theme_id " .
 				"ORDER BY q.id DESC LIMIT $start, $per_page");
 			$count = $conn->query("SELECT COUNT(*) FROM trivia_questions");
