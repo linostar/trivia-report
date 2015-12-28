@@ -61,6 +61,11 @@ body {
 	padding-top: 0.4em;
 }
 
+.footer_admin {
+	background-color: #2e2e2e !important;
+	color: white !important;
+}
+
 #login_container {
 	position: absolute;
 	top: 50%;

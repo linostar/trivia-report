@@ -281,6 +281,39 @@
 			return true;
 		}
 
+		public function add_question($n_question, $n_answer, $n_theme) {
+			$stmt_insert_question =& $this->stmt_insert_question;
+			$this->question = $n_question;
+			$this->answer = $n_answer;
+			$this->theme = $n_theme;
+			if (!$stmt_insert_question->execute()) {
+				echo "Execute failed: (" . $stmt_insert_question->errno . ") " . $stmt_insert_question->error;
+				return false;
+			}
+			return true;
+		}
+
+		public function delete_question($n_id) {
+			$stmt_delete_question =& $this->stmt_delete_question;
+			$this->question_id = $n_id;
+			if (!$stmt_delete_question->execute()) {
+				echo "Execute failed: (" . $stmt_delete_question->errno . ") " . $stmt_delete_question->error;
+				return false;
+			}
+			return true;
+		}
+
+		public function get_questions($n_page = 1) {
+			$conn =& $this->conn;
+			$per_page = $this->count_per_page;
+			$start = ($n_page - 1) * $per_page;
+			$result = $conn->query("SELECT q.question, q.answer, t.theme_name FROM trivia_questions AS q " .
+				"JOIN trivia_themes AS t ON q.theme_id=t.theme_id " .
+				"ORDER BY q.id DESC LIMIT $start, $per_page");
+			$count = $conn->query("SELECT COUNT(*) FROM trivia_questions");
+			return array($result, $count->fetch_array()[0]);
+		}
+
 		public function get_all_themes() {
 			$conn =& $this->conn;
 			return $conn->query("SELECT * FROM `trivia_themes` ORDER BY `theme_id` ASC");

@@ -172,7 +172,7 @@
 	$trivia->stop();
 ?>
 	<br/><br/>
-	<footer class="footer">
+	<footer class="footer footer_admin">
 		<center>
 			<div id="rizon_footer">© <?php echo date("Y"); ?> Rizon</div>
 		</center>

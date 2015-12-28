@@ -38,10 +38,11 @@
 	function display_question_panel($question, $rep_id) {
 		global $trivia;
 		global $all_themes_names;
-		
+
 		if (!$question) {
 			return false;
 		}
+		
 		$question_dict = $trivia->get_question($question);
 		$question_dict = $question_dict->fetch_assoc();
 		if ($question_dict) {
@@ -228,7 +229,7 @@
 	$trivia->stop();
 ?>
 	<br/><br/>
-	<footer class="footer">
+	<footer class="footer footer_admin">
 		<center>
 			<div id="rizon_footer">© <?php echo date("Y"); ?> Rizon</div>
 		</center>
