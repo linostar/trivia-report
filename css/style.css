@@ -97,6 +97,10 @@ body {
 	vertical-align: middle;
 }
 
+#table_questions td {
+	vertical-align: middle;
+}
+
 .middle {
 	text-align: center;
 }

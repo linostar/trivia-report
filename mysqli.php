@@ -303,7 +303,10 @@
 			return true;
 		}
 
-		public function get_questions($n_page = 1) {
+		public function get_questions($n_page) {
+			if (!$n_page) {
+				$n_page = 1;
+			}
 			$conn =& $this->conn;
 			$per_page = $this->count_per_page;
 			$start = ($n_page - 1) * $per_page;

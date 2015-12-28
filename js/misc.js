@@ -45,6 +45,8 @@ $(document).ready(function() {
 		$("#actionQuestionChange").val("add");
 		$("#rightTitle").text("Add Question");
 		$("#txtQuestion").val("");
+		$("#txtAnswer").val("");
+		$("#selTheme").val(1);
 		$("#leftPanel").removeClass("col-sm-offset-3");
 		$("#rightPanel").show(500);
 	});
@@ -72,5 +74,9 @@ $(document).ready(function() {
 		$("#txtQuestionID").val($(this).attr("tag_id"));
 		$("#leftPanel").removeClass("col-sm-offset-3");
 		$("#rightPanel").show(500);
+	});
+
+	$("#basic-addon").click(function() {
+		$("#formSearch").submit();
 	});
 });
