@@ -39,26 +39,26 @@
 			}
 
 			$stmt_select_report_by_id = $conn->prepare(
-				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date) AS cdate, re.reason_name, rp.report_id " . 
+				"SELECT rp.question, rp.theme_id, rp.comment, rp.state, DATE(rp.date) AS cdate, re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=re.reason_id AND rp.report_id=?"
 				);
 			$stmt_select_report_by_reason = $conn->prepare(
-				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
+				"SELECT rp.question, rp.theme_id, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=? AND rp.reason_id=re.reason_id " .
 				"ORDER BY rp.report_id DESC LIMIT ?, ?"
 				);
 			$stmt_select_report_by_state = $conn->prepare(
-				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
+				"SELECT rp.question, rp.theme_id, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=re.reason_id AND rp.state=? " .
 				"ORDER BY rp.report_id DESC LIMIT ?, ?"
 				);
 			$stmt_select_report_by_reason_state = $conn->prepare(
-				"SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
+				"SELECT rp.question, rp.theme_id, rp.comment, rp.state, DATE(rp.date), re.reason_name, rp.report_id " . 
 				"FROM reports AS rp JOIN reasons AS re ON rp.reason_id=? AND rp.state=? " .
 				"AND rp.reason_id=re.reason_id ORDER BY rp.report_id DESC LIMIT ?, ?"
 				);
 			$stmt_select_reason_name = $conn->prepare("SELECT reason_name FROM reasons WHERE reason_id=?");
-			$stmt_insert_report = $conn->prepare("INSERT INTO reports (reason_id, question, comment, state, theme) VALUES (?, ?, ?, 0, ?)");
+			$stmt_insert_report = $conn->prepare("INSERT INTO reports (reason_id, question, comment, state, theme_id) VALUES (?, ?, ?, 0, ?)");
 			$stmt_delete_report = $conn->prepare("DELETE FROM reports WHERE report_id=?");
 			$stmt_update_report_state = $conn->prepare("UPDATE reports SET state=? WHERE report_id=?");
 
@@ -67,7 +67,7 @@
 			$stmt_select_report_by_state->bind_param("iii", $this->state, $this->page_num, $this->count_per_page);
 			$stmt_select_report_by_reason_state->bind_param("iiii", $this->reason_id, $this->state, $this->page_num, $this->count_per_page);
 			$stmt_select_reason_name->bind_param("i", $this->reason_id);
-			$stmt_insert_report->bind_param("isss", $this->reason_id, $this->question, $this->comment, $this->theme);
+			$stmt_insert_report->bind_param("issi", $this->reason_id, $this->question, $this->comment, $this->theme);
 			$stmt_delete_report->bind_param("i", $this->report_id);
 			$stmt_update_report_state->bind_param("ii", $this->state, $this->report_id);
 		}
@@ -159,7 +159,7 @@
 			$conn =& $this->conn;
 			$per_page = $this->count_per_page;
 			$start = ($n_page - 1) * $per_page;
-			$result = $conn->query("SELECT rp.question, rp.theme, rp.comment, rp.state, DATE(rp.date), re.reason_name, " .
+			$result = $conn->query("SELECT rp.question, rp.theme_id, rp.comment, rp.state, DATE(rp.date), re.reason_name, " .
 				"rp.report_id FROM reports AS rp JOIN reasons AS re ON rp.reason_id = re.reason_id " .
 				"ORDER BY rp.report_id DESC LIMIT $start, $per_page");
 			$count = $conn->query("SELECT COUNT(*) FROM reports");
@@ -284,6 +284,15 @@
 		public function get_all_themes() {
 			$conn =& $this->conn;
 			return $conn->query("SELECT * FROM `trivia_themes` ORDER BY `theme_id` ASC");
+		}
+
+		public function get_themes_array() {
+			$themes = $this->get_all_themes();
+			while ($theme = $themes->fetch_array()) {
+				$theme_id = $theme[0];
+				$all_themes_names[$theme_id] = $theme[1];
+			}
+			return $all_themes_names;
 		}
 
 		public function delete_theme($n_theme) {

@@ -45,21 +45,25 @@
 		$db = new Connection;
 		$db->start();
 
+		$trivia = new Trivia_DB;
+		$trivia->start();
+
 		list($equation, $hashedCaptcha) = Captcha::calculate();
 		$all_reasons = $db->get_all_reasons();
+		$all_themes_names = $trivia->get_themes_array();
 
 		if ($_POST["selReason"] && $_POST["txtQuestion"] && $_POST["txtCaptcha"] && $_POST["selTheme"]) {
 			if (!$db->check_reason_exists($_POST["selReason"])) {
 				echo '<div id="user_alert" class="alert alert-danger col-sm-8 col-sm-offset-2">Invalid type of mistake.</div>';
 			}
 			else if (Captcha::check($_POST["txtCaptcha"], $_POST["hashedCaptcha"])) {
-				if (in_array($_POST["selTheme"], Config::$themes)) {
-					$theme = $_POST["selTheme"];
+				if (array_key_exists($_POST["selTheme"], $all_themes_names)) {
+					$theme_id = $_POST["selTheme"];
 				}
 				else {
-					$theme = "default";
+					$theme_id = 1;
 				}
-				if ($db->add_report($_POST["selReason"], $_POST["txtQuestion"], $_POST["txtComment"], $theme)) {
+				if ($db->add_report($_POST["selReason"], $_POST["txtQuestion"], $_POST["txtComment"], $theme_id)) {
 					echo '<div id="user_alert" class="alert alert-success col-sm-8 col-sm-offset-2">Report successfully submitted. ' .
 					'Thank you for notifying us about this mistake.</div>';
 				}
@@ -103,8 +107,8 @@
 					<label for="selTheme" class="control-label">Question category</label>
 					<select name="selTheme" id="selTheme" class="form-control">
 					<?php
-						foreach (Config::$themes as $theme) {
-							echo "<option value=\"$theme\">$theme</option>";
+						foreach ($all_themes_names as $key => $value) {
+							echo "<option value=\"$key\">$value</option>";
 						}
 					?>
 					</select>
@@ -138,6 +142,7 @@
 		</center>
 	</footer>
 	<?php
+		$trivia->stop();
 		$db->stop();
 	?>
 	<script src="js/jquery-2.1.4.min.js"></script>

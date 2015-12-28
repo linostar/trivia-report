@@ -16,10 +16,6 @@
 		// Number of items to be displayed per page
 		public static $items_per_page = 25;
 
-		// Trivia's themes
-		public static $themes = array("default", "Anime", "Geography", "History", "LOTR-Books", 
-			"LOTR-Movies", "Movies", "Naruto", "ScienceAndNature", "Simpsons", "Stargate");
-
 		// MySQL config for trivia-report db access
 		public static $conn_report_host = "localhost";
 		public static $conn_report_db = "trivia_report_db";

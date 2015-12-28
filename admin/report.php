@@ -31,16 +31,19 @@
 	$db->start();
 	$trivia = new Trivia_DB;
 	$trivia->start();
+
 	$all_reasons = $db->get_all_reasons();
+	$all_themes_names = $trivia->get_themes_array();
 
 	function display_question_panel($question, $rep_id) {
 		global $trivia;
+		global $all_themes_names;
+		
 		if (!$question) {
 			return false;
 		}
 		$question_dict = $trivia->get_question($question);
 		$question_dict = $question_dict->fetch_assoc();
-		$themes = $trivia->get_all_themes();
 		if ($question_dict) {
 ?>
 	<div class="container">
@@ -67,12 +70,12 @@
 							<label for="selTheme" class="control-label">Category</label>
 							<select id="selTheme" name="selTheme" class="form-control">
 <?php
-			while ($theme = $themes->fetch_array()) {
-				if ($theme[0] == $question_dict["theme_id"]) {
-					echo "<option value=\"$theme[0]\" selected>$theme[1]</option>";
+			foreach ($all_themes_names as $key => $value) {
+				if ($key == $question_dict["theme_id"]) {
+					echo "<option value=\"$key\" selected>$value</option>";
 				}
 				else {
-					echo "<option value=\"$theme[0]\">$theme[1]</option>";
+					echo "<option value=\"$key\">$value</option>";
 				}
 			}
 ?>
@@ -95,6 +98,8 @@
 		global $db;
 		global $all_reasons;
 		global $state_types;
+		global $all_themes_names;
+
 		$report = $db->get_single_report($rep_id);
 		$report = $report->fetch_assoc();
 		if ($report) {
@@ -112,7 +117,7 @@
 				</tr>
 				<tr>
 					<td><b>Category:</b></td>
-					<td><?php echo $report["theme"]; ?></td>
+					<td><?php $theme_id = $report["theme_id"]; echo $all_themes_names[$theme_id]; ?></td>
 				</tr>
 				<tr>
 					<td><b>Mistake type:</b></td>

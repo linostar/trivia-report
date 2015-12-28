@@ -32,8 +32,12 @@
 
 	$db = new Connection;
 	$db->start();
+	$trivia = new Trivia_DB;
+	$trivia->start();
+
 	$all_reasons = $db->get_all_reasons();
 	$reason_exists = $db->check_reason_exists($_GET["rid"]);
+	$all_themes_names = $trivia->get_themes_array();
 
 	while ($row = $all_reasons->fetch_array(MYSQLI_NUM)) {
 		$key = $row[0];
@@ -60,10 +64,13 @@
 
 	function display_reports($reports) {
 		global $state_types;
+		global $all_themes_names;
 		while ($row = $reports->fetch_array(MYSQLI_NUM)) {
 			$st = $row[3];
+			$theme_id = $row[1];
+			$theme_name = $all_themes_names[$theme_id];
 			echo "<tr><td><a href=\"report.php?id=$row[6]\">$row[0]</a></td>" .
-			"<td class=\"middle\">$row[1]</td><td class=\"middle\">$row[5]</td><td class=\"middle\">$row[4]</td>" .
+			"<td class=\"middle\">$theme_name</td><td class=\"middle\">$row[5]</td><td class=\"middle\">$row[4]</td>" .
 			"<td class=\"middle $state_types[$st]\">$state_types[$st]</td></tr>";
 		}
 		if (!$reports->num_rows) {
@@ -254,6 +261,7 @@
 		Utils::display_login();
 	}
 
+	$trivia->stop();
 	$db->stop();
 ?>
 	<br/><br/>
